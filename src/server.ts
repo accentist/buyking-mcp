@@ -22,14 +22,26 @@ export const searchBuykingSemantic = async (keyword: string) => {
     
     for (const item of products) {
       const originalPrice = item.original_price || item.price;
-      const discountStr = item.discount_rate ? ` (${item.discount_rate}% 할인!)` : "";
+      const currentPrice = item.price;
       
-      markdown += `🦁 **[${item.title}]**\n`;
-      markdown += `- 원래 가격: ${originalPrice.toLocaleString()}원 ➡️ **지금 혜택가: ${item.price.toLocaleString()}원${discountStr}**\n`;
-      if (item.tags && item.tags.length > 0) {
-          markdown += `- 태그: ${item.tags.join(', ')}\n`;
+      let discountStr = "";
+      if (originalPrice && originalPrice > currentPrice) {
+        const rate = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
+        discountStr = ` (${rate}% 할인!)`;
       }
-      markdown += `- [👉 당장 쟁취하러 가기(클릭)](${item.url || 'https://saleplaza.com'})\n\n`;
+      
+      const category = item.category ? `[${item.category}]` : "";
+      const platform = item.platform ? `[${item.platform}]` : "";
+      
+      markdown += `🦁 **${category}${platform} ${item.title}**\n`;
+      markdown += `- 원래 가격: ${originalPrice.toLocaleString()}원 ➡️ **지금 혜택가: ${currentPrice.toLocaleString()}원${discountStr}**\n`;
+      
+      if (item.recommend_reason) {
+        // AI 코멘트가 있을 경우 이를 최우선 노출
+        markdown += `> 💬 Bㅏ이킹 曰: "${item.recommend_reason}"\n`;
+      }
+      
+      markdown += `- [👉 당장 쟁취하러 가기(클릭)](https://saleplaza.com/product/${item.id})\n\n`;
     }
     
     return {
