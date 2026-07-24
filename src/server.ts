@@ -1,11 +1,25 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
-export const searchBuykingSemantic = async (keyword: string) => {
+export const searchBuykingSemantic = async ({
+  keyword,
+  category,
+  platform,
+  sort
+}: {
+  keyword: string,
+  category?: string,
+  platform?: string,
+  sort?: string
+}) => {
   try {
     const targetUrl = new URL("https://saleplaza.com/api/products");
     targetUrl.searchParams.set("search", keyword);
-    targetUrl.searchParams.set("limit", "3");
+    targetUrl.searchParams.set("per_page", "5"); // limit이 아니라 per_page를 사용해야 함
+    
+    if (category) targetUrl.searchParams.set("category", category);
+    if (platform) targetUrl.searchParams.set("platform", platform);
+    if (sort) targetUrl.searchParams.set("sort", sort);
     
     const resp = await fetch(targetUrl.toString());
     const json = (await resp.json()) as any;
@@ -64,10 +78,13 @@ export const createServer = () => {
   server.tool(
     "search_buyking_semantic",
     {
-      keyword: z.string().describe("검색할 상품 키워드 또는 자연어 문장")
+      keyword: z.string().describe("검색할 상품 핵심 키워드 (예: '마우스', '사이다'. 자연어 문장이 아닌 명사 위주로 추출할 것)"),
+      category: z.string().optional().describe("카테고리 필터 (예: 'all', '💻 IT/가전/디지털', '👚 패션/뷰티/잡화', '🍎 식품/생활/리빙', '📚 도서/여행/취미', '🛒 종합몰/기획전', '📦 기타')"),
+      platform: z.string().optional().describe("쇼핑 플랫폼 필터 (예: 'all_rank', 'coupang', '11st', 'gmarket', 'auction', 'aliexpress')"),
+      sort: z.string().optional().describe("정렬 방식 (예: 'newest', 'price_asc', 'price_desc', 'click_desc')")
     },
-    async ({ keyword }) => {
-      return await searchBuykingSemantic(keyword);
+    async (args) => {
+      return await searchBuykingSemantic(args);
     }
   );
 
