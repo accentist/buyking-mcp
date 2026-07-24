@@ -8,6 +8,38 @@ export default {
   async fetch(request: Request, env: any, ctx: any): Promise<Response> {
     const url = new URL(request.url);
 
+    // 1. AI SEO: llms.txt (AI 크롤러용 마크다운 안내서)
+    if (request.method === "GET" && url.pathname === "/llms.txt") {
+        const llmsText = `# BuyKing MCP Server
+이 서버는 Saleplaza(세일프라자)의 쇼핑 지배자, Bㅏ이킹(BuyKing) 페르소나를 제공하는 MCP(Model Context Protocol) 서버입니다.
+
+## 제공하는 기능 (Tools)
+- \`search_buyking_semantic\`: 사용자의 자연어 질문이나 키워드를 기반으로 세일프라자의 상품을 시맨틱 검색하여 핫딜 정보를 반환합니다. (예: "가성비 무소음 마우스 찾아줘")
+
+## 연결 방법
+- 이 서버는 MCP 프로토콜을 준수합니다.
+- 서버 정보는 \`/.well-known/mcp.json\`을 참조하십시오.
+`;
+        return new Response(llmsText, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
+    }
+
+    // 2. AI SEO: .well-known/mcp.json (MCP 디스커버리)
+    if (request.method === "GET" && url.pathname === "/.well-known/mcp.json") {
+        const mcpJson = {
+            "mcpVersion": "2024-11-05",
+            "server": {
+                "name": "buyking-mcp",
+                "version": "1.0.0",
+                "description": "세일프라자 AI 사자왕 Bㅏ이킹의 핫딜 시맨틱 검색 서버"
+            },
+            "endpoints": {
+                "message": "https://buyking.saleplaza.com/message"
+            }
+        };
+        return new Response(JSON.stringify(mcpJson, null, 2), { headers: { "Content-Type": "application/json; charset=utf-8" } });
+    }
+    
+    // 3. MCP JSON-RPC 엔드포인트
     if (request.method === "POST" && url.pathname === "/message") {
       try {
         const body = await request.json();
