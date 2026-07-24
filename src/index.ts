@@ -56,10 +56,10 @@ Allow: /
         if ((body as any)?.method === "tools/call" && (body as any)?.params?.name === "search_buyking_semantic") {
             // A fully compliant MCP implementation on CF Workers would use a Durable Object 
             // and a WebStream Transport. This is a simplified stateless mock.
-            const keyword = (body as any).params.arguments.keyword;
+            const args = (body as any).params.arguments;
             
             // Execute the exact same logic the actual MCP server uses
-            const result = await import("./server.js").then(m => m.searchBuykingSemantic(keyword));
+            const result = await import("./server.js").then(m => m.searchBuykingSemantic(args));
             
             return new Response(JSON.stringify({
                 jsonrpc: "2.0",
