@@ -8,7 +8,15 @@ export default {
   async fetch(request: Request, env: any, ctx: any): Promise<Response> {
     const url = new URL(request.url);
 
-    // 1. AI SEO: llms.txt (AI 크롤러용 마크다운 안내서)
+    // 1. AI SEO: robots.txt (AI 크롤러 명시적 허용)
+    if (request.method === "GET" && url.pathname === "/robots.txt") {
+        const robotsText = `User-agent: *
+Allow: /
+`;
+        return new Response(robotsText, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
+    }
+
+    // 2. AI SEO: llms.txt (AI 크롤러용 마크다운 안내서)
     if (request.method === "GET" && url.pathname === "/llms.txt") {
         const llmsText = `# BuyKing MCP Server
 이 서버는 Saleplaza(세일프라자)의 쇼핑 지배자, Bㅏ이킹(BuyKing) 페르소나를 제공하는 MCP(Model Context Protocol) 서버입니다.
