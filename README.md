@@ -15,7 +15,7 @@
 * 🗣️ **완벽한 Bㅏ이킹 페르소나**
   * 딱딱한 시스템 응답 대신, Bㅏ이킹 고유의 유쾌하고 찰진 추천 코멘트와 함께 시각적으로 아름다운 마크다운(Markdown) 포맷으로 응답합니다.
 * ⚡ **초고속 Serverless 인프라**
-  * Cloudflare Workers 기반으로 구축되어, 전 세계 어디서든 지연 없는 빠른 응답 속도와 완벽한 안정성을 자랑합니다.
+  * CDN 서버 기반으로 구축되어, 전 세계 어디서든 지연 없는 빠른 응답 속도와 완벽한 안정성을 자랑합니다.
 
 ---
 
@@ -23,31 +23,42 @@
 
 현재 가장 널리 쓰이는 **Claude Desktop** 앱에 Bㅏ이킹을 연결하는 방법입니다. 단 1분이면 충분합니다!
 
-### 1️⃣ 설정 파일 열기
-Mac 터미널을 열고 아래 명령어를 입력하여 Claude 환경 설정 파일을 엽니다.
+### 1️⃣ 단 한 줄로 자동 설치하기
+터미널(또는 명령 프롬프트)을 열고 사용 중인 운영체제에 맞는 명령어를 복사하여 붙여넣기만 하면 끝납니다!
+
+**🍎 Mac / 🐧 Linux 환경:**
 ```bash
-code ~/Library/Application\ Support/Claude/claude_desktop_config.json
+curl -sL https://saleplaza.com/buyking-mcp-install.sh | bash
 ```
-*(Windows의 경우: `%APPDATA%\\Claude\\claude_desktop_config.json`)*
 
-### 2️⃣ BuyKing MCP 연결 코드 추가
-설정 파일에 아래의 JSON 코드를 추가하고 저장합니다.
-*(경로는 실제 `buyking-mcp` 프로젝트가 설치된 절대 경로로 맞춰주세요!)*
-
-```json
-{
-  "mcpServers": {
-    "buyking": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "tsx",
-        "/Users/gvnc/Desktop/AG2/buyking-mcp/src/cli.ts"
-      ]
-    }
-  }
-}
+**🪟 Windows 환경 (PowerShell):**
+```powershell
+Invoke-WebRequest -Uri "https://saleplaza.com/buyking-mcp-install.bat" -OutFile "buyking-mcp-install.bat"; .\buyking-mcp-install.bat
 ```
+
+*(참고: 이 자동 설치 스크립트는 Claude Desktop의 환경 설정 파일(`claude_desktop_config.json`)을 자동으로 찾아 Bㅏ이킹을 완벽하게 세팅해 줍니다.)*
+
+### 2️⃣ 수동으로 설치하기 (선택 사항)
+자동 설치 스크립트를 사용할 수 없거나 직접 설정하고 싶은 경우, 아래 방법에 따라 진행해 주세요.
+
+1. **설정 파일 열기**
+   - Mac: 터미널에서 `code ~/Library/Application\ Support/Claude/claude_desktop_config.json` 실행
+   - Windows: `%APPDATA%\Claude\claude_desktop_config.json` 파일 열기
+2. **BuyKing MCP 연결 코드 추가**
+   해당 파일의 `mcpServers` 항목에 아래 내용을 추가하고 저장합니다.
+   ```json
+   {
+     "mcpServers": {
+       "buyking": {
+         "command": "npx",
+         "args": [
+           "-y",
+           "buyking-mcp"
+         ]
+       }
+     }
+   }
+   ```
 
 ### 3️⃣ Claude 재시작 및 채팅 시작!
 1. Claude 앱을 완전히 종료(`Cmd + Q`)한 후 다시 실행합니다.
