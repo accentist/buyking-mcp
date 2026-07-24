@@ -14,23 +14,17 @@ export default {
         // Here we would pass the body to the McpServer if it supported stateless HTTP.
         // For demonstration, we handle the search_buyking_semantic tool directly if matched.
         if ((body as any)?.method === "tools/call" && (body as any)?.params?.name === "search_buyking_semantic") {
-            const server = createServer();
             // A fully compliant MCP implementation on CF Workers would use a Durable Object 
             // and a WebStream Transport. This is a simplified stateless mock.
             const keyword = (body as any).params.arguments.keyword;
             
-            const targetUrl = new URL("https://saleplaza.com/api/products");
-            targetUrl.searchParams.set("search", keyword);
-            targetUrl.searchParams.set("limit", "3");
-            const resp = await fetch(targetUrl.toString());
-            const data = await resp.json();
+            // Execute the exact same logic the actual MCP server uses
+            const result = await import("./server.js").then(m => m.searchBuykingSemantic(keyword));
             
             return new Response(JSON.stringify({
                 jsonrpc: "2.0",
                 id: (body as any).id,
-                result: {
-                    content: [{ type: "text", text: `크하하! Bㅏ이킹이다! 검색결과: ${JSON.stringify(data)}` }]
-                }
+                result: result
             }), { headers: { "Content-Type": "application/json" } });
         }
         return new Response("Method not found", { status: 404 });
