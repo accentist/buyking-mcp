@@ -1,18 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
-export const createServer = () => {
-  const server = new McpServer({
-    name: "BuyKing-MCP",
-    version: "1.0.0"
-  });
-
-  server.tool(
-    "search_buyking_semantic",
-    "세일프라자의 사자왕 Bㅏ이킹에게 특정 제품 검색을 요청합니다. 시맨틱(의미) 기반 핫딜 추천을 반환합니다.",
-    {
-      keyword: z.string().describe("검색할 상품 키워드 또는 자연어 문장")
-    },
 export const searchBuykingSemantic = async (keyword: string) => {
   try {
     const targetUrl = new URL("https://saleplaza.com/api/products");
@@ -26,7 +14,7 @@ export const searchBuykingSemantic = async (keyword: string) => {
     
     if (products.length === 0) {
       return {
-        content: [{ type: "text", text: "크하하! 짐이 다 찾아보았으나 네 녀석이 원하는 조건의 핫딜은 현재 보물창고에 없도다!" }]
+        content: [{ type: "text" as const, text: "크하하! 짐이 다 찾아보았으나 네 녀석이 원하는 조건의 핫딜은 현재 보물창고에 없도다!" }]
       };
     }
 
@@ -45,19 +33,24 @@ export const searchBuykingSemantic = async (keyword: string) => {
     }
     
     return {
-      content: [{ type: "text", text: markdown.trim() }]
+      content: [{ type: "text" as const, text: markdown.trim() }]
     };
     
   } catch (error: any) {
      return {
-        content: [{ type: "text", text: `크하하! 에러가 발생했다! 짐의 보물창고 문이 열리지 않는다: ${error.message}` }]
+        content: [{ type: "text" as const, text: `크하하! 에러가 발생했다! 짐의 보물창고 문이 열리지 않는다: ${error.message}` }]
      };
   }
 };
 
+export const createServer = () => {
+  const server = new McpServer({
+    name: "BuyKing-MCP",
+    version: "1.0.0"
+  });
+
   server.tool(
     "search_buyking_semantic",
-    "세일프라자의 사자왕 Bㅏ이킹에게 특정 제품 검색을 요청합니다. 시맨틱(의미) 기반 핫딜 추천을 반환합니다.",
     {
       keyword: z.string().describe("검색할 상품 키워드 또는 자연어 문장")
     },
