@@ -1,0 +1,23 @@
+{
+  "name": "buyking-mcp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "check": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260702.1",
+    "@types/node": "^26.1.1",
+    "typescript": "^7.0.2",
+    "wrangler": "^4.86.0"
+  }
+}
