@@ -5,7 +5,7 @@ setlocal enabledelayedexpansion
 :: git 저장소인지 확인
 git rev-parse --is-inside-work-tree >nul 2>&1
 if errorlevel 1 (
-    echo ❌ 현재 디렉터리는 git 저장소가 아닙니다.
+    echo ❌ 현재 디렉터리는  s git 저장소가  아닙니다.
     exit /b 1
 )
 
