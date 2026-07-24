@@ -1,16 +1,24 @@
 {
   "name": "buyking-mcp",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "build/index.js",
+  "bin": {
+    "buyking-mcp": "./build/cli.js"
+  },
+  "files": [
+    "build"
+  ],
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "build": "tsc",
+    "prepack": "npm run build"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["mcp", "saleplaza", "shopping"],
+  "author": "Saleplaza",
   "license": "ISC",
-  "description": "",
+  "description": "BuyKing MCP Server for Claude Desktop",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0"
   },
