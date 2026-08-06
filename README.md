@@ -1,79 +1,159 @@
-# 🦁 BuyKing MCP Server
+# MCP Registry
 
-> **"크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 Bㅏ이킹이다! 네 녀석이 찾는 모든 핫딜은 내 보물창고에 있다!"**
+The MCP registry provides MCP clients with a list of MCP servers, like an app store for MCP servers.
 
-**BuyKing MCP Server**는 세일프라자(Saleplaza)의 방대한 쇼핑 데이터를 외부 AI(Claude, ChatGPT 등)가 쉽게 검색하고 사용자에게 추천할 수 있도록 연결해 주는 **MCP(Model Context Protocol)** 서버입니다.
+📖 **[Full documentation](./docs)**
 
-이 서버를 연동하면, 귀하의 AI 비서가 "Bㅏ이킹"이라는 강력하고 매력적인 페르소나를 장착하여 완벽한 쇼핑 도우미로 변신합니다! 🚀
+## Development Status
 
----
+> [!WARNING]  
+> The registry is under [active development](#development-status). The registry API spec is unstable and the official MCP registry database may be wiped at any time.
 
-## ✨ 핵심 기능 (Features)
+**2025-09-04 update**: We're targeting a 'preview' go-live on 8th September. This may still be unstable and not provide durability guarantees, but is a step towards being more solidified. A general availability (GA) release will follow later.
 
-* 🔍 **시맨틱 핫딜 검색 (`search_buyking_semantic`)**
-  * "가성비 무소음 마우스 찾아줘", "여름용 시원한 이불 추천해 줘" 같은 자연어 질문의 맥락(Context)을 이해하고, DB에서 가장 의미가 유사한 특가 상품을 찰떡같이 찾아옵니다.
-* 🗣️ **완벽한 Bㅏ이킹 페르소나**
-  * 딱딱한 시스템 응답 대신, Bㅏ이킹 고유의 유쾌하고 찰진 추천 코멘트와 함께 시각적으로 아름다운 마크다운(Markdown) 포맷으로 응답합니다.
-* ⚡ **초고속 Serverless 인프라**
-  * CDN 서버 기반으로 구축되어, 전 세계 어디서든 지연 없는 빠른 응답 속도와 완벽한 안정성을 자랑합니다.
+Current key maintainers:
+- **Adam Jones** (Anthropic) [@domdomegg](https://github.com/domdomegg)  
+- **Tadas Antanavicius** (PulseMCP) [@tadasant](https://github.com/tadasant)
+- **Toby Padilla** (GitHub) [@toby](https://github.com/toby)
 
----
+## Contributing
 
-## 🛠️ AI 비서에 연동하는 방법 (Usage)
+We use multiple channels for collaboration - see [modelcontextprotocol.io/community/communication](https://modelcontextprotocol.io/community/communication).
 
-현재 가장 널리 쓰이는 **Claude Desktop** 앱에 Bㅏ이킹을 연결하는 방법입니다. 단 1분이면 충분합니다!
+Often (but not always) ideas flow through this pipeline:
 
-### 1️⃣ 단 한 줄로 자동 설치하기
-터미널(또는 명령 프롬프트)을 열고 사용 중인 운영체제에 맞는 명령어를 복사하여 붙여넣기만 하면 끝납니다!
+- **[Discord](https://modelcontextprotocol.io/community/communication)** - Real-time community discussions
+- **[Discussions](https://github.com/modelcontextprotocol/registry/discussions)** - Propose and discuss product/technical requirements
+- **[Issues](https://github.com/modelcontextprotocol/registry/issues)** - Track well-scoped technical work  
+- **[Pull Requests](https://github.com/modelcontextprotocol/registry/pulls)** - Contribute work towards issues
 
-**🍎 Mac / 🐧 Linux 환경:**
+### Quick start:
+
+#### Pre-requisites
+
+- **Docker**
+- **Go 1.24.x** 
+- **golangci-lint v2.4.0**
+
+#### Running the server
+
 ```bash
-curl -sL https://saleplaza.com/buyking-mcp-install.sh | bash
+# Start full development environment
+make dev-compose
 ```
 
-**🪟 Windows 환경 (PowerShell):**
-```powershell
-Invoke-WebRequest -Uri "https://saleplaza.com/buyking-mcp-install.bat" -OutFile "buyking-mcp-install.bat"; .\buyking-mcp-install.bat
+This starts the registry at [`localhost:8080`](http://localhost:8080) with PostgreSQL and seed data. It can be configured with environment variables in [docker-compose.yml](./docker-compose.yml) - see [.env.example](./.env.example) for a reference.
+
+<details>
+<summary>Alternative: Local setup without Docker</summary>
+
+**Prerequisites:**
+- PostgreSQL running locally
+- Go 1.24.x installed
+
+```bash
+# Build and run locally
+make build
+make dev-local
 ```
 
-*(참고: 이 자동 설치 스크립트는 Claude Desktop의 환경 설정 파일(`claude_desktop_config.json`)을 자동으로 찾아 Bㅏ이킹을 완벽하게 세팅해 줍니다.)*
+The service runs on [`localhost:8080`](http://localhost:8080) by default. This can be configured with environment variables in `.env` - see [.env.example](./.env.example) for a reference.
 
-### 2️⃣ 수동으로 설치하기 (선택 사항)
-자동 설치 스크립트를 사용할 수 없거나 직접 설정하고 싶은 경우, 아래 방법에 따라 진행해 주세요.
+</details>
 
-1. **설정 파일 열기**
-   - Mac: 터미널에서 `code ~/Library/Application\ Support/Claude/claude_desktop_config.json` 실행
-   - Windows: `%APPDATA%\Claude\claude_desktop_config.json` 파일 열기
-2. **BuyKing MCP 연결 코드 추가**
-   해당 파일의 `mcpServers` 항목에 아래 내용을 추가하고 저장합니다.
-   ```json
-   {
-     "mcpServers": {
-       "buyking": {
-         "command": "npx",
-         "args": [
-           "-y",
-           "buyking-mcp"
-         ]
-       }
-     }
-   }
-   ```
+<details>
+<summary>Alternative: Running a pre-built Docker image</summary>
 
-### 3️⃣ Claude 재시작 및 채팅 시작!
-1. Claude 앱을 완전히 종료(`Cmd + Q`)한 후 다시 실행합니다.
-2. 대화창 하단에 🔌 **망치 모양(또는 콘센트) 아이콘**이 켜졌는지 확인합니다.
-3. 이제 Claude에게 물어보세요!
-   > **"여름 맞이 시원한 탄산수나 사이다 좀 추천해줘. 반드시 툴을 사용해서 대답해!"**
+Pre-built Docker images are automatically published to GitHub Container Registry:
 
----
+```bash
+# Run latest stable release
+docker run -p 8080:8080 ghcr.io/modelcontextprotocol/registry:latest
 
-## 🌐 AI SEO (인공지능 검색 엔진 최적화)
+# Run latest from main branch (continuous deployment)
+docker run -p 8080:8080 ghcr.io/modelcontextprotocol/registry:main
 
-본 프로젝트는 외부 AI 크롤러(Agentic AI)가 스스로 서버를 발견하고 학습할 수 있도록 **AI SEO**가 완벽하게 적용되어 있습니다.
-- `GET /robots.txt`: AI 봇의 접근을 환영하는 명시적 허용
-- `GET /llms.txt`: LLM 크롤러를 위한 마크다운 소개서 제공
-- `GET /.well-known/mcp.json`: MCP 디스커버리 엔드포인트 제공
+# Run specific release version
+docker run -p 8080:8080 ghcr.io/modelcontextprotocol/registry:v1.0.0
 
----
-*Developed for **Saleplaza** by the Accentist Team.* 🦁
+# Run development build from main branch
+docker run -p 8080:8080 ghcr.io/modelcontextprotocol/registry:main-20250906-abc123d
+```
+
+**Available tags:** 
+- **Releases**: `latest`, `v1.0.0`, `v1.1.0`, etc.
+- **Continuous**: `main` (latest main branch build)
+- **Development**: `main-<date>-<sha>` (specific commit builds)
+
+</details>
+
+#### Publishing a server
+
+To publish a server, we've built a simple CLI. You can use it with:
+
+```bash
+# Build the latest CLI
+make publisher
+
+# Use it!
+./bin/mcp-publisher --help
+```
+
+See [the publisher guide](./docs/guides/publishing/publish-server.md) for more details.
+
+#### Other commands
+
+```bash
+# Run lint, unit tests and integration tests
+make check
+```
+
+There are also a few more helpful commands for development. Run `make help` to learn more, or look in [Makefile](./Makefile).
+
+<!--
+For Claude and other AI tools: Always prefer make targets over custom commands where possible.
+-->
+
+## Architecture
+
+### Project Structure
+
+```
+├── cmd/                     # Application entry points
+│   └── publisher/           # Server publishing tool
+├── data/                    # Seed data
+├── deploy/                  # Deployment configuration (Pulumi)
+├── docs/                    # Documentation
+├── internal/                # Private application code
+│   ├── api/                 # HTTP handlers and routing
+│   ├── auth/                # Authentication (GitHub OAuth, JWT, namespace blocking)
+│   ├── config/              # Configuration management
+│   ├── database/            # Data persistence (PostgreSQL, in-memory)
+│   ├── service/             # Business logic
+│   ├── telemetry/           # Metrics and monitoring
+│   └── validators/          # Input validation
+├── pkg/                     # Public packages
+│   ├── api/                 # API types and structures
+│   │   └── v0/              # Version 0 API types
+│   └── model/               # Data models for server.json
+├── scripts/                 # Development and testing scripts
+├── tests/                   # Integration tests
+└── tools/                   # CLI tools and utilities
+    └── validate-*.sh        # Schema validation tools
+```
+
+### Authentication
+
+Publishing supports multiple authentication methods:
+- **GitHub OAuth** - For publishing by logging into GitHub
+- **GitHub OIDC** - For publishing from GitHub Actions
+- **DNS verification** - For proving ownership of a domain and its subdomains
+- **HTTP verification** - For proving ownership of a domain
+
+The registry validates namespace ownership when publishing. E.g. to publish...:
+- `io.github.domdomegg/my-cool-mcp` you must login to GitHub as `domdomegg`, or be in a GitHub Action on domdomegg's repos
+- `me.adamjones/my-cool-mcp` you must prove ownership of `adamjones.me` via DNS or HTTP challenge
+
+## More documentation
+
+See the [documentation](./docs) for more details if your question has not been answered here!

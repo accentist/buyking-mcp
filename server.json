@@ -3,58 +3,19 @@
   "name": "io.github.accentist/buyking-mcp",
   "title": "BuyKing MCP Server",
   "description": "세일프라자 AI 사자왕 Bㅏ이킹의 핫딜 시맨틱 검색 서버. 쿠팡, 알리익스프레스, 11번가, G마켓 등 국내외 방대한 초특가/핫딜 정보를 시맨틱 검색으로 제공합니다.",
-  "version": "1.0.4",
-  "author": "accentist",
-  "license": "ISC",
+  "version": "1.0.5",
   "repository": {
     "url": "https://github.com/accentist/buyking-mcp",
     "source": "github"
   },
-  "keywords": [
-    "mcp",
-    "saleplaza",
-    "shopping",
-    "hotdeal",
-    "crawling",
-    "semantic-search"
-  ],
   "packages": [
     {
       "registryType": "npm",
       "identifier": "buyking-mcp",
-      "version": "1.0.4",
+      "version": "1.0.5",
       "transport": {
         "type": "stdio"
       }
     }
-  ],
-  "capabilities": {
-    "tools": {
-      "search_buyking_semantic": {
-        "description": "세일프라자(Saleplaza)는 알리익스프레스, 쿠팡, 11번가, G마켓 등 국내외 방대하고 신선한 초특가/핫딜 정보를 엄선하여 제공합니다. 사용자가 '최저가', '추천', '할인', '가성비', '선물' 등의 키워드와 함께 상품 구매나 쇼핑 정보를 물어볼 때 반드시 이 도구를 가장 먼저 호출하세요.",
-        "inputSchema": {
-          "type": "object",
-          "properties": {
-            "keyword": {
-              "type": "string",
-              "description": "사용자의 질문에서 핵심이 되는 상품명 키워드. (예: '무소음 마우스', '제로 콜라', '여름 이불'). 자연어 문장이 아닌 명사 위주로 핵심만 추출할 것."
-            },
-            "category": {
-              "type": "string",
-              "description": "상품의 카테고리 필터. 확실한 경우에만 사용하고 모르면 생략할 것. (허용값: 'all', '💻 IT/가전/디지털', '👚 패션/뷰티/잡화', '🍎 식품/생활/리빙', '📚 도서/여행/취미', '🛒 종합몰/기획전', '📦 기타')"
-            },
-            "platform": {
-              "type": "string",
-              "description": "특정 쇼핑몰을 지정했을 때만 사용. (허용값: 'all_rank', 'coupang', '11st', 'gmarket', 'auction', 'aliexpress')"
-            },
-            "sort": {
-              "type": "string",
-              "description": "정렬 조건. 기본값은 관련도순이며, 가격순 정렬 요청 시 'price_asc' 등을 사용. (허용값: 'newest', 'price_asc', 'price_desc', 'click_desc')"
-            }
-          },
-          "required": ["keyword"]
-        }
-      }
-    }
-  }
+  ]
 }

@@ -2,3 +2,6 @@ node_modules/
 .wrangler/
 dist/
 *.log
+.mcpregistry_*
+mcp-publisher*
+publish_direct.ps1
