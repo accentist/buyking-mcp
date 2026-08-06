@@ -7,6 +7,6 @@ async function main() {
     const server = (0, server_js_1.createServer)();
     const transport = new stdio_js_1.StdioServerTransport();
     await server.connect(transport);
-    console.error("BuyKing-MCP Stdio Server running");
+    console.error("BuyKing-MCP Stdio Server running"); // eslint-disable-line no-console
 }
 main().catch(console.error);

@@ -1,8 +1,9 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
   "name": "io.github.accentist/buyking-mcp",
+  "title": "BuyKing MCP Server",
   "description": "세일프라자 AI 사자왕 Bㅏ이킹의 핫딜 시맨틱 검색 서버. 쿠팡, 알리익스프레스, 11번가, G마켓 등 국내외 방대한 초특가/핫딜 정보를 시맨틱 검색으로 제공합니다.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": "accentist",
   "license": "ISC",
   "repository": {
@@ -16,6 +17,16 @@
     "hotdeal",
     "crawling",
     "semantic-search"
+  ],
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "buyking-mcp",
+      "version": "1.0.4",
+      "transport": {
+        "type": "stdio"
+      }
+    }
   ],
   "capabilities": {
     "tools": {
