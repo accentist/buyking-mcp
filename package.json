@@ -1,10 +1,6 @@
 {
   "name": "buyking-mcp",
-<<<<<<< HEAD
-  "version": "1.0.5",
-=======
-  "version": "1.0.6",
->>>>>>> 54a262b (v1.0.6 적용 대용량 DB 대응)
+  "version": "1.0.7",
   "mcpName": "io.github.accentist/buyking-mcp",
   "main": "build/index.js",
   "bin": {
