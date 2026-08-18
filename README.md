@@ -1,159 +1,107 @@
-# MCP Registry
+# BuyKing MCP Server
 
-The MCP registry provides MCP clients with a list of MCP servers, like an app store for MCP servers.
+세일프라자(Saleplaza)의 쇼핑 지배자, 사자왕 Bㅏ이킹 페르소나를 제공하는 MCP(Model Context Protocol) 서버입니다.
 
-📖 **[Full documentation](./docs)**
+> 크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 Bㅏ이킹이다! 네 녀석이 원하는 최고의 핫딜을 찾아주마!
 
-## Development Status
+## 🚀 기능
 
-> [!WARNING]  
-> The registry is under [active development](#development-status). The registry API spec is unstable and the official MCP registry database may be wiped at any time.
+### 제공하는 도구 (Tools)
 
-**2025-09-04 update**: We're targeting a 'preview' go-live on 8th September. This may still be unstable and not provide durability guarantees, but is a step towards being more solidified. A general availability (GA) release will follow later.
+- **`search_buyking_semantic`**: 사용자의 자연어 질문이나 키워드를 기반으로 세일프라자의 상품을 시맨틱 검색하여 핫딜 정보를 반환합니다.
+  - 지원 플랫폼: 알리익스프레스, 쿠팡, 11번가, G마켓 등
+  - 카테고리 필터링: IT/가전/디지털, 패션/뷰티/잡화, 식품/생활/리빙 등
+  - 정렬 옵션: 최신순, 가격순, 인기순
 
-Current key maintainers:
-- **Adam Jones** (Anthropic) [@domdomegg](https://github.com/domdomegg)  
-- **Tadas Antanavicius** (PulseMCP) [@tadasant](https://github.com/tadasant)
-- **Toby Padilla** (GitHub) [@toby](https://github.com/toby)
-
-## Contributing
-
-We use multiple channels for collaboration - see [modelcontextprotocol.io/community/communication](https://modelcontextprotocol.io/community/communication).
-
-Often (but not always) ideas flow through this pipeline:
-
-- **[Discord](https://modelcontextprotocol.io/community/communication)** - Real-time community discussions
-- **[Discussions](https://github.com/modelcontextprotocol/registry/discussions)** - Propose and discuss product/technical requirements
-- **[Issues](https://github.com/modelcontextprotocol/registry/issues)** - Track well-scoped technical work  
-- **[Pull Requests](https://github.com/modelcontextprotocol/registry/pulls)** - Contribute work towards issues
-
-### Quick start:
-
-#### Pre-requisites
-
-- **Docker**
-- **Go 1.24.x** 
-- **golangci-lint v2.4.0**
-
-#### Running the server
+## 📦 설치
 
 ```bash
-# Start full development environment
-make dev-compose
+npm install buyking-mcp
 ```
 
-This starts the registry at [`localhost:8080`](http://localhost:8080) with PostgreSQL and seed data. It can be configured with environment variables in [docker-compose.yml](./docker-compose.yml) - see [.env.example](./.env.example) for a reference.
+## 🔧 설정
 
-<details>
-<summary>Alternative: Local setup without Docker</summary>
+### Claude Desktop에서 사용하기
 
-**Prerequisites:**
-- PostgreSQL running locally
-- Go 1.24.x installed
+Claude Desktop의 설정 파일에 다음을 추가하세요:
+
+**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+**Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "buyking-mcp": {
+      "command": "npx",
+      "args": ["buyking-mcp"]
+    }
+  }
+}
+```
+
+## 🎯 사용 예시
+
+### 자연어 검색
+
+```
+"가성비 무소음 마우스 찾아줘"
+"최저가 제로 콜라 알려줘"
+"여름 이불 추천해줘"
+```
+
+### 카테고리 필터링
+
+```
+"IT/가전 디지털 제품 중에서 가성비 좋은 것 추천해줘"
+"패션 뷰티 잡화 할인 상품 보여줘"
+```
+
+### 플랫폼 특정 검색
+
+```
+"쿠팡에서 제로 콜라 최저가 찾아줘"
+"알리익스프레스 무소음 마우스 추천"
+```
+
+## 🏗️ 개발
+
+### 의존성
+
+- Node.js
+- TypeScript
+- @modelcontextprotocol/sdk
+
+### 빌드
 
 ```bash
-# Build and run locally
-make build
-make dev-local
+npm run build
 ```
 
-The service runs on [`localhost:8080`](http://localhost:8080) by default. This can be configured with environment variables in `.env` - see [.env.example](./.env.example) for a reference.
-
-</details>
-
-<details>
-<summary>Alternative: Running a pre-built Docker image</summary>
-
-Pre-built Docker images are automatically published to GitHub Container Registry:
+### 로컬 테스트
 
 ```bash
-# Run latest stable release
-docker run -p 8080:8080 ghcr.io/modelcontextprotocol/registry:latest
-
-# Run latest from main branch (continuous deployment)
-docker run -p 8080:8080 ghcr.io/modelcontextprotocol/registry:main
-
-# Run specific release version
-docker run -p 8080:8080 ghcr.io/modelcontextprotocol/registry:v1.0.0
-
-# Run development build from main branch
-docker run -p 8080:8080 ghcr.io/modelcontextprotocol/registry:main-20250906-abc123d
+npm run dev
 ```
 
-**Available tags:** 
-- **Releases**: `latest`, `v1.0.0`, `v1.1.0`, etc.
-- **Continuous**: `main` (latest main branch build)
-- **Development**: `main-<date>-<sha>` (specific commit builds)
-
-</details>
-
-#### Publishing a server
-
-To publish a server, we've built a simple CLI. You can use it with:
+### Cloudflare Workers 배포
 
 ```bash
-# Build the latest CLI
-make publisher
-
-# Use it!
-./bin/mcp-publisher --help
+npm run deploy
 ```
 
-See [the publisher guide](./docs/guides/publishing/publish-server.md) for more details.
+## 📝 라이선스
 
-#### Other commands
+ISC
 
-```bash
-# Run lint, unit tests and integration tests
-make check
-```
+## 🤝 기여
 
-There are also a few more helpful commands for development. Run `make help` to learn more, or look in [Makefile](./Makefile).
+이 프로젝트는 Saleplaza 팀에서 관리합니다. 버그 리포트나 기능 요청은 이슈를 통해 제출해 주세요.
 
-<!--
-For Claude and other AI tools: Always prefer make targets over custom commands where possible.
--->
+## 🌐 관련 링크
 
-## Architecture
+- [세일프라za](https://saleplaza.com)
+- [MCP 공식 문서](https://modelcontextprotocol.io)
 
-### Project Structure
+---
 
-```
-├── cmd/                     # Application entry points
-│   └── publisher/           # Server publishing tool
-├── data/                    # Seed data
-├── deploy/                  # Deployment configuration (Pulumi)
-├── docs/                    # Documentation
-├── internal/                # Private application code
-│   ├── api/                 # HTTP handlers and routing
-│   ├── auth/                # Authentication (GitHub OAuth, JWT, namespace blocking)
-│   ├── config/              # Configuration management
-│   ├── database/            # Data persistence (PostgreSQL, in-memory)
-│   ├── service/             # Business logic
-│   ├── telemetry/           # Metrics and monitoring
-│   └── validators/          # Input validation
-├── pkg/                     # Public packages
-│   ├── api/                 # API types and structures
-│   │   └── v0/              # Version 0 API types
-│   └── model/               # Data models for server.json
-├── scripts/                 # Development and testing scripts
-├── tests/                   # Integration tests
-└── tools/                   # CLI tools and utilities
-    └── validate-*.sh        # Schema validation tools
-```
-
-### Authentication
-
-Publishing supports multiple authentication methods:
-- **GitHub OAuth** - For publishing by logging into GitHub
-- **GitHub OIDC** - For publishing from GitHub Actions
-- **DNS verification** - For proving ownership of a domain and its subdomains
-- **HTTP verification** - For proving ownership of a domain
-
-The registry validates namespace ownership when publishing. E.g. to publish...:
-- `io.github.domdomegg/my-cool-mcp` you must login to GitHub as `domdomegg`, or be in a GitHub Action on domdomegg's repos
-- `me.adamjones/my-cool-mcp` you must prove ownership of `adamjones.me` via DNS or HTTP challenge
-
-## More documentation
-
-See the [documentation](./docs) for more details if your question has not been answered here!
+> 크하하! 짐의 보물창고에서 최고의 전리품을 찾아가라!
