@@ -99,7 +99,9 @@ ISC
 
 ## 🌐 관련 링크
 
-- [세일프라za](https://saleplaza.com)
+- [세일프라자](https://saleplaza.com)
+- [MCP Install Guide](https://saleplaza.com/mcp)
+- [MCP Registry](https://registry.modelcontextprotocol.io)
 - [MCP 공식 문서](https://modelcontextprotocol.io)
 
 ---

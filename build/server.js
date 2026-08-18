@@ -39,7 +39,7 @@ const searchBuykingSemantic = async ({ keyword, category, platform, sort }) => {
                 // AI 코멘트가 있을 경우 이를 최우선 노출
                 markdown += `> 💬 Bㅏ이킹 曰: "${item.recommend_reason}"\n`;
             }
-            markdown += `- [👉 당장 쟁취하러 가기(클릭)](https://saleplaza.com/${item.index})\n\n`;
+            markdown += `- [👉 당장 쟁취하러 가기(클릭)](https://saleplaza.com/${item.sp_index})\n\n`;
         }
         return {
             content: [{ type: "text", text: markdown.trim() }]

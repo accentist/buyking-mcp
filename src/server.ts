@@ -55,7 +55,7 @@ export const searchBuykingSemantic = async ({
         markdown += `> 💬 Bㅏ이킹 曰: "${item.recommend_reason}"\n`;
       }
 
-      markdown += `- [👉 당장 쟁취하러 가기(클릭)](https://saleplaza.com/${item.index})\n\n`;
+      markdown += `- [👉 당장 쟁취하러 가기(클릭)](https://saleplaza.com/${item.sp_index})\n\n`;
     }
 
     return {
