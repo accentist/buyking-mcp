@@ -72,7 +72,7 @@ export const searchBuykingSemantic = async ({
 export const createServer = () => {
   const server = new McpServer({
     name: "BuyKing-MCP",
-    version: "1.0.1"
+    version: "1.1.0"
   });
 
   server.tool(

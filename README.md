@@ -13,6 +13,12 @@
   - 카테고리 필터링: IT/가전/디지털, 패션/뷰티/잡화, 식품/생활/리빙 등
   - 정렬 옵션: 최신순, 가격순, 인기순
 
+### 서버 엔드포인트
+
+- **HTTP JSON-RPC**: `https://buyking.saleplaza.com/message`
+- **MCP Discovery**: `https://buyking.saleplaza.com/.well-known/mcp.json`
+- **LLMs.txt**: `https://buyking.saleplaza.com/llms.txt`
+
 ## 📦 설치
 
 ```bash
@@ -63,6 +69,54 @@ Claude Desktop의 설정 파일에 다음을 추가하세요:
 "알리익스프레스 무소음 마우스 추천"
 ```
 
+## 🔌 API 직접 호출
+
+### HTTP JSON-RPC 예시
+
+```bash
+curl -X POST https://buyking.saleplaza.com/message \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "tools/call",
+    "params": {
+      "name": "search_buyking_semantic",
+      "arguments": {
+        "keyword": "무소음 마우스"
+      }
+    }
+  }'
+```
+
+### 파라미터 상세 설명
+
+**`search_buyking_semantic` 도구 파라미터:**
+
+| 파라미터 | 타입 | 필수 | 설명 | 예시 |
+|---------|------|------|------|------|
+| `keyword` | string | ✅ | 검색할 상품명 키워드 | "무소음 마우스", "제로 콜라" |
+| `category` | string | ❌ | 카테고리 필터 | "💻 IT/가전/디지털", "👚 패션/뷰티/잡화" |
+| `platform` | string | ❌ | 플랫폼 필터 | "coupang", "11st", "gmarket", "aliexpress" |
+| `sort` | string | ❌ | 정렬 조건 | "newest", "price_asc", "price_desc", "click_desc" |
+
+**카테고리 허용값:**
+- `all` - 전체
+- `💻 IT/가전/디지털`
+- `👚 패션/뷰티/잡화`
+- `🍎 식품/생활/리빙`
+- `📚 도서/여행/취미`
+- `🛒 종합몰/기획전`
+- `📦 기타`
+
+**플랫폼 허용값:**
+- `all_rank` - 전체
+- `coupang` - 쿠팡
+- `11st` - 11번가
+- `gmarket` - G마켓
+- `auction` - 옥션
+- `aliexpress` - 알리익스프레스
+
 ## 🏗️ 개발
 
 ### 의존성
@@ -103,6 +157,24 @@ ISC
 - [MCP Install Guide](https://saleplaza.com/mcp)
 - [MCP Registry](https://registry.modelcontextprotocol.io)
 - [MCP 공식 문서](https://modelcontextprotocol.io)
+
+## 📋 MCP Registry
+
+BuyKing MCP Server는 공식 MCP Registry에 등록되어 있습니다.
+
+### Registry 정보
+- **서버 이름**: `io.github.accentist/buyking-mcp`
+- **버전**: 1.1.0
+- **레지스트리**: [registry.modelcontextprotocol.io](https://registry.modelcontextprotocol.io)
+
+### Registry에서 검색
+```bash
+# API로 서버 정보 조회
+curl "https://registry.modelcontextprotocol.io/v0.1/servers/io.github.accentist%2Fbuyking-mcp/versions/latest"
+
+# 웹에서 검색
+https://registry.modelcontextprotocol.io/?q=buyking-mcp
+```
 
 ---
 

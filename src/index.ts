@@ -37,7 +37,7 @@ Allow: /
             "mcpVersion": "2024-11-05",
             "server": {
                 "name": "buyking-mcp",
-                "version": "1.0.0",
+                "version": "1.1.0",
                 "description": "세일프라자 AI 사자왕 Bㅏ이킹의 핫딜 시맨틱 검색 서버"
             },
             "endpoints": {
