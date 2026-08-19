@@ -39,11 +39,13 @@ Claude Desktop의 설정 파일에 다음을 추가하세요:
   "mcpServers": {
     "buyking-mcp": {
       "command": "npx",
-      "args": ["buyking-mcp"]
+      "args": ["-y", "buyking-mcp@latest"]
     }
   }
 }
 ```
+
+> 💡 **팁**: `@latest` 태그를 사용하면 항상 최신 버전이 설치되어 캐시 문제를 방지할 수 있습니다.
 
 ## 🎯 사용 예시
 
@@ -117,6 +119,14 @@ curl -X POST https://buyking.saleplaza.com/message \
 - `auction` - 옥션
 - `aliexpress` - 알리익스프레스
 
+## 📸 실제 사용 예시
+
+### LMStudio에서의 사용 예시
+
+![LMStudio에서 BuyKing MCP를 활용한 마우스 검색 예시](https://images.saleplaza.com/img-assets/buyking-using-llm.png)
+
+*LMStudio에서 BuyKing MCP를 활용하여 "마우스"를 검색한 결과입니다. AI가 자동으로 최적의 핫딜을 찾아 추천해주는 것을 확인할 수 있습니다.*
+
 ## 🏗️ 개발
 
 ### 의존성
@@ -164,7 +174,7 @@ BuyKing MCP Server는 공식 MCP Registry에 등록되어 있습니다.
 
 ### Registry 정보
 - **서버 이름**: `io.github.accentist/buyking-mcp`
-- **버전**: 1.1.0
+- **버전**: 1.1.1
 - **레지스트리**: [registry.modelcontextprotocol.io](https://registry.modelcontextprotocol.io)
 
 ### Registry에서 검색
