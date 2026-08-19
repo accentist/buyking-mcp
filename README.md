@@ -174,7 +174,7 @@ BuyKing MCP Server는 공식 MCP Registry에 등록되어 있습니다.
 
 ### Registry 정보
 - **서버 이름**: `io.github.accentist/buyking-mcp`
-- **버전**: 1.1.1
+- **버전**: 1.1.2
 - **레지스트리**: [registry.modelcontextprotocol.io](https://registry.modelcontextprotocol.io)
 
 ### Registry에서 검색

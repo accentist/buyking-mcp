@@ -1,6 +1,6 @@
 {
   "name": "buyking-mcp",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "mcpName": "io.github.accentist/buyking-mcp",
   "main": "build/index.js",
   "bin": {

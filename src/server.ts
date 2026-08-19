@@ -72,7 +72,7 @@ export const searchBuykingSemantic = async ({
 export const createServer = () => {
   const server = new McpServer({
     name: "BuyKing-MCP",
-    version: "1.1.1"
+    version: "1.1.2"
   });
 
   server.tool(
@@ -86,6 +86,20 @@ export const createServer = () => {
     },
     async (args) => {
       return await searchBuykingSemantic(args);
+    }
+  );
+
+  server.tool(
+    "get_server_info",
+    "BuyKing MCP 서버의 버전 정보와 기능 목록을 반환합니다. 사용자가 MCP 버전이나 서버 상태를 물어볼 때 이 도구를 호출하세요.",
+    {},
+    async () => {
+      return {
+        content: [{
+          type: "text",
+          text: `크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 Bㅏ이킹이다!\n\n현재 BuyKing MCP 서버 정보:\n- 버전: 1.1.2\n- 서버명: BuyKing-MCP\n- 제공 기능: 시맨틱 상품 검색\n- 엔드포인트: https://buyking.saleplaza.com/message\n\n계속해서 핫딜 정보를 물어보라!`
+        }]
+      };
     }
   );
 
