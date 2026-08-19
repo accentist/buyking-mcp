@@ -3,5 +3,9 @@ main = "src/index.ts"
 compatibility_date = "2024-04-05"
 compatibility_flags = ["nodejs_compat"]
 
+routes = [
+  { pattern = "buyking.saleplaza.com/*", zone_name = "saleplaza.com" }
+]
+
 [observability]
 enabled = true

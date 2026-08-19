@@ -52,20 +52,35 @@ Allow: /
       try {
         const body = await request.json();
         // Here we would pass the body to the McpServer if it supported stateless HTTP.
-        // For demonstration, we handle the search_buyking_semantic tool directly if matched.
-        if ((body as any)?.method === "tools/call" && (body as any)?.params?.name === "search_buyking_semantic") {
-            // A fully compliant MCP implementation on CF Workers would use a Durable Object 
-            // and a WebStream Transport. This is a simplified stateless mock.
-            const args = (body as any).params.arguments;
-            
-            // Execute the exact same logic the actual MCP server uses
+        // For demonstration, we handle the tools directly if matched.
+        if ((body as any)?.method === "tools/call") {
+          const toolName = (body as any)?.params?.name;
+          const args = (body as any).params.arguments;
+          
+          if (toolName === "search_buyking_semantic") {
             const result = await import("./server.js").then(m => m.searchBuykingSemantic(args));
             
             return new Response(JSON.stringify({
-                jsonrpc: "2.0",
-                id: (body as any).id,
-                result: result
+              jsonrpc: "2.0",
+              id: (body as any).id,
+              result: result
             }), { headers: { "Content-Type": "application/json" } });
+          }
+          
+          if (toolName === "get_server_info") {
+            const result = {
+              content: [{
+                type: "text",
+                text: `크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 Bㅏ이킹이다!\n\n현재 BuyKing MCP 서버 정보:\n- 버전: 1.1.2\n- 서버명: BuyKing-MCP\n- 제공 기능: 시맨틱 상품 검색\n- 엔드포인트: https://buyking.saleplaza.com/message\n\n계속해서 핫딜 정보를 물어보라!`
+              }]
+            };
+            
+            return new Response(JSON.stringify({
+              jsonrpc: "2.0",
+              id: (body as any).id,
+              result: result
+            }), { headers: { "Content-Type": "application/json" } });
+          }
         }
         return new Response("Method not found", { status: 404 });
       } catch (e: any) {
