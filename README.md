@@ -4,6 +4,10 @@
 
 > 크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 Bㅏ이킹이다! 네 녀석이 원하는 최고의 핫딜을 찾아주마!
 
+[![Glama.ai BuyKing MCP Server Badge](https://images.saleplaza.com/img-assets/glama-card-badge.png)](https://glama.ai/mcp/servers/accentist/buyking-mcp/score)
+
+> 🏆 **Glama.ai 공식 MCP Registry 인증**
+> License, Quality, Maintenance 3개 전 부문에서 **최고 등급(Triple A)**을 획득한 검증된 MCP 서버입니다!
 ## 🚀 기능
 
 ### 제공하는 도구 (Tools)
