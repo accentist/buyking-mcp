@@ -1,0 +1,28 @@
+{
+  "$schema": "https://glama.ai/mcp/schemas/server.json",
+  "name": "buyking-mcp",
+  "maintainers": [
+    "accentist"
+  ],
+  "category": "E-commerce & Retail",
+  "description": "Enables AI assistants to search Saleplaza's hot deals using semantic search and recommend products with a distinctive 'BuyKing' persona.",
+  "homepage": "https://saleplaza.com",
+  "keywords": [
+    "hotdeals",
+    "shopping",
+    "semantic-search",
+    "saleplaza",
+    "korean-shopping",
+    "mcp-server"
+  ],
+  "tools": [
+    {
+      "name": "search_buyking_semantic",
+      "description": "사용자의 쇼핑 의도나 최저가/할인 질문을 파악하여 세일프라자의 방대한 국내외 핫딜 DB에서 최적의 상품 정보를 시맨틱 검색으로 추출합니다."
+    },
+    {
+      "name": "get_server_info",
+      "description": "BuyKing MCP 서버의 현재 구동 상태, API 버전 정보 및 연동 가능한 도구 목록을 반환합니다."
+    }
+  ]
+}
