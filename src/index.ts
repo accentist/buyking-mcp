@@ -14,7 +14,7 @@ const TOOL_REGION_MAP: Record<string, {
 };
 
 // ─── 서버 정보 응답 (get_server_info 공통) ─────────────────────────────────────
-const SERVER_INFO_TEXT = `크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 Bㅏ이킹이다!\n\n현재 BuyKing MCP 서버 정보:\n- 버전: 1.2.0\n- 서버명: BuyKing-MCP\n- 제공 도구 (5개):\n  🌍 search_buyking_semantic — GLOBAL 전체 검색 (국가코드 표기)\n  🇰🇷 search_buyking_semantic_KR — 한국 배송 (KRW/한국어)\n  🇺🇸 search_buyking_semantic_US — 미국 배송 (USD/English)\n  🇯🇵 search_buyking_semantic_JP — 일본 배송 (JPY/日本語)\n  ℹ️ get_server_info — 서버 정보\n- 엔드포인트: https://buyking.saleplaza.com/message\n\n계속해서 핫딜 정보를 물어보라!`;
+const SERVER_INFO_TEXT = `Roar! I am BuyKing, the Shopping Conqueror of Saleplaza!\n\nBuyKing MCP Server Info:\n- Version: 1.2.1\n- Server: BuyKing-MCP\n- Tools (5):\n  🌍 search_buyking_semantic — Global search across all markets\n  🇰🇷 search_buyking_semantic_KR — Korea delivery (KRW/Korean)\n  🇺🇸 search_buyking_semantic_US — US delivery (USD/English)\n  🇯🇵 search_buyking_semantic_JP — Japan delivery (JPY/Japanese)\n  ℹ️ get_server_info — Server info\n- Endpoint: https://buyking.saleplaza.com/message\n\nAsk me for hot deals anytime!`;
 
 export default {
   async fetch(request: Request, env: any, ctx: any): Promise<Response> {
@@ -86,6 +86,42 @@ Allow: /
       try {
         const body = await request.json();
 
+        if ((body as any)?.method === "tools/list") {
+          return new Response(JSON.stringify({
+            jsonrpc: "2.0",
+            id: (body as any).id,
+            result: {
+              tools: [
+                {
+                  name: "search_buyking_semantic",
+                  description: "[GLOBAL] Semantically search hot deals worldwide across all markets (KR/US/JP). Each result is labeled with a shipping country code. Supports Korean, English, and Japanese keywords with smart language-priority sorting.",
+                  inputSchema: { type: "object", properties: { keyword: { type: "string", description: "Product keyword to search (e.g., 'wireless mouse', '무선 마우스', 'ワイヤレスマウス')" }, category: { type: "string", description: "Category filter (optional)" }, platform: { type: "string", description: "Platform filter (optional): coupang, 11st, gmarket, aliexpress" }, sort: { type: "string", description: "Sort order (optional): newest, price_asc, price_desc, click_desc" } }, required: ["keyword"] }
+                },
+                {
+                  name: "search_buyking_semantic_KR",
+                  description: "[KOREA] Search hot deals deliverable within South Korea. Returns KRW(₩) pricing and Korean product information.",
+                  inputSchema: { type: "object", properties: { keyword: { type: "string", description: "Product keyword to search" }, category: { type: "string" }, platform: { type: "string" }, sort: { type: "string" } }, required: ["keyword"] }
+                },
+                {
+                  name: "search_buyking_semantic_US",
+                  description: "[USA] Search hot deals deliverable within the United States. Returns USD($) pricing and English product information.",
+                  inputSchema: { type: "object", properties: { keyword: { type: "string", description: "Product keyword to search" }, category: { type: "string" }, platform: { type: "string" }, sort: { type: "string" } }, required: ["keyword"] }
+                },
+                {
+                  name: "search_buyking_semantic_JP",
+                  description: "[JAPAN] Search hot deals deliverable within Japan. Returns JPY(¥) pricing and Japanese product information.",
+                  inputSchema: { type: "object", properties: { keyword: { type: "string", description: "Product keyword to search" }, category: { type: "string" }, platform: { type: "string" }, sort: { type: "string" } }, required: ["keyword"] }
+                },
+                {
+                  name: "get_server_info",
+                  description: "Returns version information and the list of available tools for the BuyKing MCP server.",
+                  inputSchema: { type: "object", properties: {} }
+                }
+              ]
+            }
+          }), { headers: { "Content-Type": "application/json; charset=utf-8" } });
+        }
+
         if ((body as any)?.method === "tools/call") {
           const toolName = (body as any)?.params?.name;
           const args = (body as any).params.arguments;
@@ -120,6 +156,6 @@ Allow: /
       }
     }
 
-    return new Response("BuyKing MCP Server v1.2.0 running on Cloudflare Workers. Use /message for JSON-RPC.", { status: 200 });
+    return new Response("BuyKing MCP Server v1.2.1 running on Cloudflare Workers. Use /message for JSON-RPC.", { status: 200 });
   }
 };

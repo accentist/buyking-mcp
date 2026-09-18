@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
   "name": "io.github.accentist/buyking-mcp",
   "title": "BuyKing MCP Server",
-  "description": "Enables AI assistants to search Saleplaza's hot deals using semantic search across global, Korean, US, and Japanese markets with a distinctive 'BuyKing' persona.",
+  "description": "Saleplaza BuyKing MCP: Semantic search for global shopping hot deals (US/JP/KR).",
   "version": "1.2.1",
   "repository": {
     "url": "https://github.com/accentist/buyking-mcp",
