@@ -37,7 +37,7 @@ Allow: /
             "mcpVersion": "2024-11-05",
             "server": {
                 "name": "buyking-mcp",
-                "version": "1.1.2",
+                "version": "1.2.0",
                 "description": "세일프라자 AI 사자왕 Bㅏ이킹의 핫딜 시맨틱 검색 서버"
             },
             "endpoints": {
@@ -71,7 +71,7 @@ Allow: /
             const result = {
               content: [{
                 type: "text",
-                text: `크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 Bㅏ이킹이다!\n\n현재 BuyKing MCP 서버 정보:\n- 버전: 1.1.2\n- 서버명: BuyKing-MCP\n- 제공 기능: 시맨틱 상품 검색\n- 엔드포인트: https://buyking.saleplaza.com/message\n\n계속해서 핫딜 정보를 물어보라!`
+                text: `크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 Bㅏ이킹이다!\n\n현재 BuyKing MCP 서버 정보:\n- 버전: 1.2.0\n- 서버명: BuyKing-MCP\n- 제공 기능: 시맨틱 상품 검색\n- 엔드포인트: https://buyking.saleplaza.com/message\n\n계속해서 핫딜 정보를 물어보라!`
               }]
             };
             

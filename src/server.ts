@@ -55,7 +55,7 @@ export const searchBuykingSemantic = async ({
         markdown += `> 💬 Bㅏ이킹 曰: "${item.recommend_reason}"\n`;
       }
 
-      markdown += `- [👉 당장 쟁취하러 가기(클릭)](https://saleplaza.com/${item.sp_index})\n\n`;
+      markdown += `- [👉 당장 쟁취하러 가기(클릭)](https://saleplaza.com/${item.id})\n\n`;
     }
 
     return {
@@ -72,7 +72,7 @@ export const searchBuykingSemantic = async ({
 export const createServer = () => {
   const server = new McpServer({
     name: "BuyKing-MCP",
-    version: "1.1.2"
+    version: "1.2.0"
   });
 
   server.tool(
@@ -97,7 +97,7 @@ export const createServer = () => {
       return {
         content: [{
           type: "text",
-          text: `크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 Bㅏ이킹이다!\n\n현재 BuyKing MCP 서버 정보:\n- 버전: 1.1.2\n- 서버명: BuyKing-MCP\n- 제공 기능: 시맨틱 상품 검색\n- 엔드포인트: https://buyking.saleplaza.com/message\n\n계속해서 핫딜 정보를 물어보라!`
+          text: `크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 Bㅏ이킹이다!\n\n현재 BuyKing MCP 서버 정보:\n- 버전: 1.2.0\n- 서버명: BuyKing-MCP\n- 제공 기능: 시맨틱 상품 검색\n- 엔드포인트: https://buyking.saleplaza.com/message\n\n계속해서 핫딜 정보를 물어보라!`
         }]
       };
     }
