@@ -5,7 +5,7 @@
     "accentist"
   ],
   "category": "E-commerce & Retail",
-  "description": "Enables AI assistants to search Saleplaza's hot deals using semantic search and recommend products with a distinctive 'BuyKing' persona.",
+  "description": "Enables AI assistants to search Saleplaza's hot deals using semantic search across global, Korean, US, and Japanese markets with a distinctive 'BuyKing' persona.",
   "homepage": "https://saleplaza.com",
   "keywords": [
     "hotdeals",
@@ -13,12 +13,25 @@
     "semantic-search",
     "saleplaza",
     "korean-shopping",
+    "global-shopping",
     "mcp-server"
   ],
   "tools": [
     {
       "name": "search_buyking_semantic",
-      "description": "사용자의 쇼핑 의도나 최저가/할인 질문을 파악하여 세일프라자의 방대한 국내외 핫딜 DB에서 최적의 상품 정보를 시맨틱 검색으로 추출합니다."
+      "description": "[GLOBAL] 전 세계 핫딜을 국경 없이 시맨틱 검색합니다. 각 상품 앞에 배송 국가코드(🇰🇷KR/🇺🇸US/🇯🇵JP)가 표기됩니다."
+    },
+    {
+      "name": "search_buyking_semantic_KR",
+      "description": "[KR] 한국 내 직배송 가능한 핫딜만 검색합니다. KRW(₩) 가격, 한국어 결과."
+    },
+    {
+      "name": "search_buyking_semantic_US",
+      "description": "[US] Search US-deliverable hot deals. USD($) pricing, English results."
+    },
+    {
+      "name": "search_buyking_semantic_JP",
+      "description": "[JP] 日本配送可能ホットディールのみ検索。JPY(¥)、日本語結果。"
     },
     {
       "name": "get_server_info",

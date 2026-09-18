@@ -8,14 +8,36 @@
 
 > 🏆 **Glama.ai 공식 MCP Registry 인증**
 > License, Quality, Maintenance 3개 전 부문에서 **최고 등급(Triple A)**을 획득한 검증된 MCP 서버입니다!
+
 ## 🚀 기능
 
-### 제공하는 도구 (Tools)
+### 제공하는 도구 (Tools) — 5개
 
-- **`search_buyking_semantic`**: 사용자의 자연어 질문이나 키워드를 기반으로 세일프라자의 상품을 시맨틱 검색하여 핫딜 정보를 반환합니다.
-  - 지원 플랫폼: 알리익스프레스, 쿠팡, 11번가, G마켓 등
-  - 카테고리 필터링: IT/가전/디지털, 패션/뷰티/잡화, 식품/생활/리빙 등
-  - 정렬 옵션: 최신순, 가격순, 인기순
+#### 🌍 글로벌 검색
+- **`search_buyking_semantic`**: 전 세계 핫딜을 국경 없이 시맨틱 검색합니다. 각 상품 앞에 배송 국가코드(🇰🇷KR/🇺🇸US/🇯🇵JP)가 표기됩니다.
+
+#### 🇰🇷 한국 전용
+- **`search_buyking_semantic_KR`**: 한국 내 직배송 가능한 핫딜만 검색합니다. KRW(₩) 가격, 한국어 결과.
+
+#### 🇺🇸 미국 전용
+- **`search_buyking_semantic_US`**: US-deliverable hot deals only. USD($) pricing, English results.
+
+#### 🇯🇵 일본 전용
+- **`search_buyking_semantic_JP`**: 日本国内配送可能なホットディールのみ検索。JPY(¥)価格、日本語結果。
+
+#### ℹ️ 서버 정보
+- **`get_server_info`**: BuyKing MCP 서버의 버전 정보와 기능 목록을 반환합니다.
+
+### 공통 파라미터
+
+모든 검색 도구는 동일한 파라미터를 지원합니다:
+
+| 파라미터 | 타입 | 필수 | 설명 | 예시 |
+|---------|------|------|------|------|
+| `keyword` | string | ✅ | 검색할 상품명 키워드 | "무소음 마우스", "wireless earbuds" |
+| `category` | string | ❌ | 카테고리 필터 | "💻 IT/가전/디지털", "👚 패션/뷰티/잡화" |
+| `platform` | string | ❌ | 플랫폼 필터 | "coupang", "11st", "gmarket", "aliexpress" |
+| `sort` | string | ❌ | 정렬 조건 | "newest", "price_asc", "price_desc", "click_desc" |
 
 ### 서버 엔드포인트
 
@@ -53,26 +75,32 @@ Claude Desktop의 설정 파일에 다음을 추가하세요:
 
 ## 🎯 사용 예시
 
-### 자연어 검색
+### 글로벌 검색 (GLOBAL)
 
 ```
-"가성비 무소음 마우스 찾아줘"
-"최저가 제로 콜라 알려줘"
-"여름 이불 추천해줘"
+"가성비 무소음 마우스 찾아줘" → search_buyking_semantic
+"Find me the best wireless earbuds" → search_buyking_semantic
 ```
 
-### 카테고리 필터링
+### 한국 배송 검색 (KR)
 
 ```
-"IT/가전 디지털 제품 중에서 가성비 좋은 것 추천해줘"
-"패션 뷰티 잡화 할인 상품 보여줘"
+"한국 배송 가능한 제로 콜라 최저가" → search_buyking_semantic_KR
+"쿠팡에서 여름 이불 추천해줘" → search_buyking_semantic_KR
 ```
 
-### 플랫폼 특정 검색
+### 미국 배송 검색 (US)
 
 ```
-"쿠팡에서 제로 콜라 최저가 찾아줘"
-"알리익스프레스 무소음 마우스 추천"
+"Best deals on mechanical keyboards in the US" → search_buyking_semantic_US
+"Amazon US wireless mouse deals" → search_buyking_semantic_US
+```
+
+### 일본 배송 검색 (JP)
+
+```
+"日本で買えるワイヤレスマウスのお得情報" → search_buyking_semantic_JP
+"Amazon JP おすすめキーボード" → search_buyking_semantic_JP
 ```
 
 ## 🔌 API 직접 호출
@@ -80,6 +108,7 @@ Claude Desktop의 설정 파일에 다음을 추가하세요:
 ### HTTP JSON-RPC 예시
 
 ```bash
+# 글로벌 검색
 curl -X POST https://buyking.saleplaza.com/message \
   -H "Content-Type: application/json" \
   -d '{
@@ -93,18 +122,22 @@ curl -X POST https://buyking.saleplaza.com/message \
       }
     }
   }'
+
+# 미국 전용 검색
+curl -X POST https://buyking.saleplaza.com/message \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 2,
+    "method": "tools/call",
+    "params": {
+      "name": "search_buyking_semantic_US",
+      "arguments": {
+        "keyword": "wireless mouse"
+      }
+    }
+  }'
 ```
-
-### 파라미터 상세 설명
-
-**`search_buyking_semantic` 도구 파라미터:**
-
-| 파라미터 | 타입 | 필수 | 설명 | 예시 |
-|---------|------|------|------|------|
-| `keyword` | string | ✅ | 검색할 상품명 키워드 | "무소음 마우스", "제로 콜라" |
-| `category` | string | ❌ | 카테고리 필터 | "💻 IT/가전/디지털", "👚 패션/뷰티/잡화" |
-| `platform` | string | ❌ | 플랫폼 필터 | "coupang", "11st", "gmarket", "aliexpress" |
-| `sort` | string | ❌ | 정렬 조건 | "newest", "price_asc", "price_desc", "click_desc" |
 
 **카테고리 허용값:**
 - `all` - 전체
@@ -178,7 +211,7 @@ BuyKing MCP Server는 공식 MCP Registry에 등록되어 있습니다.
 
 ### Registry 정보
 - **서버 이름**: `io.github.accentist/buyking-mcp`
-- **버전**: 1.1.2
+- **버전**: 1.2.0
 - **레지스트리**: [registry.modelcontextprotocol.io](https://registry.modelcontextprotocol.io)
 
 ### Registry에서 검색
