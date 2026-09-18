@@ -99,7 +99,7 @@ Allow: /
               jsonrpc: "2.0",
               id: (body as any).id,
               result: result
-            }), { headers: { "Content-Type": "application/json" } });
+            }), { headers: { "Content-Type": "application/json; charset=utf-8" } });
           }
           
           // 서버 정보 도구
@@ -110,7 +110,7 @@ Allow: /
               result: {
                 content: [{ type: "text", text: SERVER_INFO_TEXT }]
               }
-            }), { headers: { "Content-Type": "application/json" } });
+            }), { headers: { "Content-Type": "application/json; charset=utf-8" } });
           }
         }
 

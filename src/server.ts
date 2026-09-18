@@ -46,6 +46,21 @@ const PERSONA = {
   },
 };
 
+// ─── 검색어 언어 자동 감지 ───────────────────────────────────────────────────────
+function detectLanguage(text: string): 'ko' | 'en' | 'ja' {
+  // 1. 한국어 (가-힣)
+  if (/[가-힣]/.test(text)) return 'ko';
+  
+  // 2. 일본어 (히라가나, 가타카나, 기본 한자)
+  if (/[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/.test(text)) return 'ja';
+  
+  // 3. 알파벳 (영어)
+  if (/[a-zA-Z]/.test(text)) return 'en';
+  
+  // 4. 기본값
+  return 'ko';
+}
+
 // ─── 국가코드 플래그 (GLOBAL 모드용, currency 기반) ────────────────────────────
 function getRegionFlag(currency?: string): string {
   if (currency === 'USD') return '🇺🇸US';
@@ -67,7 +82,7 @@ export const searchBuykingSemantic = async ({
   platform,
   sort,
   region,
-  lang = 'ko',
+  lang: defaultLang = 'ko',
   currencySymbol = '',
   currencyCode = '',
 }: {
@@ -80,13 +95,16 @@ export const searchBuykingSemantic = async ({
   currencySymbol?: string;
   currencyCode?: string;
 }) => {
-  const persona = PERSONA[lang] || PERSONA.ko;
-  const isGlobal = !region;
+  const isGlobal = !region || region === 'GLOBAL';
+  // GLOBAL 검색일 경우 키워드의 언어를 감지하여 페르소나 언어 덮어쓰기
+  const finalLang = isGlobal ? detectLanguage(keyword) : defaultLang;
+  
+  const persona = PERSONA[finalLang] || PERSONA.ko;
 
   try {
     const targetUrl = new URL("https://saleplaza.com/api/products");
     targetUrl.searchParams.set("search", keyword);
-    targetUrl.searchParams.set("per_page", "5");
+    targetUrl.searchParams.set("per_page", "20");
 
     // region 전달: GLOBAL이면 필터 우회, 아니면 해당 국가만
     targetUrl.searchParams.set("region", region || "GLOBAL");
@@ -98,7 +116,7 @@ export const searchBuykingSemantic = async ({
     const resp = await fetch(targetUrl.toString());
     const json = (await resp.json()) as any;
 
-    const products = json.products || json.data || [];
+    let products = json.products || json.data || [];
 
     if (products.length === 0) {
       return {
@@ -106,12 +124,40 @@ export const searchBuykingSemantic = async ({
       };
     }
 
+    // ── [언어별 우선순위 정렬 로직] ──
+    // 영어(en) -> USD 우선, 일본어(ja) -> JPY 우선, 한국어(ko) -> KRW 우선
+    if (isGlobal && products.length > 0) {
+      products.sort((a: any, b: any) => {
+        const aCur = a.currency || a.CURRENCY || 'KRW';
+        const bCur = b.currency || b.CURRENCY || 'KRW';
+        
+        let aScore = 0;
+        let bScore = 0;
+        
+        if (finalLang === 'en') {
+          aScore = aCur === 'USD' ? 2 : (aCur === 'KRW' ? 1 : 0);
+          bScore = bCur === 'USD' ? 2 : (bCur === 'KRW' ? 1 : 0);
+        } else if (finalLang === 'ja') {
+          aScore = aCur === 'JPY' ? 2 : (aCur === 'KRW' ? 1 : 0);
+          bScore = bCur === 'JPY' ? 2 : (bCur === 'KRW' ? 1 : 0);
+        } else {
+          aScore = aCur === 'KRW' ? 2 : (aCur === 'USD' ? 1 : 0);
+          bScore = bCur === 'KRW' ? 2 : (bCur === 'USD' ? 1 : 0);
+        }
+        
+        return bScore - aScore; // 점수 내림차순 정렬
+      });
+    }
+
+    // 상위 5개만 추출
+    products = products.slice(0, 5);
+
     let markdown = persona.intro(keyword);
 
     for (const item of products) {
       const originalPrice = item.original_price || item.ORIGINAL_PRICE || item.price || item.PRICE;
       const currentPrice = item.price || item.PRICE;
-      const title = getTitle(item, lang);
+      const title = getTitle(item, finalLang);
       const currency = item.currency || item.CURRENCY || 'KRW';
 
       // 할인율 계산
