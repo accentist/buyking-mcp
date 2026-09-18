@@ -86,7 +86,7 @@ Allow: /
                             jsonrpc: "2.0",
                             id: body.id,
                             result: result
-                        }), { headers: { "Content-Type": "application/json" } });
+                        }), { headers: { "Content-Type": "application/json; charset=utf-8" } });
                     }
                     // 서버 정보 도구
                     if (toolName === "get_server_info") {
@@ -96,7 +96,7 @@ Allow: /
                             result: {
                                 content: [{ type: "text", text: SERVER_INFO_TEXT }]
                             }
-                        }), { headers: { "Content-Type": "application/json" } });
+                        }), { headers: { "Content-Type": "application/json; charset=utf-8" } });
                     }
                 }
                 return new Response("Method not found", { status: 404 });
