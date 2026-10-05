@@ -241,14 +241,13 @@ const DETAIL_LABELS: Record<DetailLang, {
   opinions: string;
   createdAt: string;
   none: string;
-  countries: Record<string, string>;
   star: (n: number) => string;
 }> = {
   ko: {
     intro: (id) => `크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 Bㅏ이킹이다!\n상품 ID ${id}의 상세 전리품을 펼쳐 보이노라!\n\n`,
     id: '상품 ID',
     title: '제목',
-    country: '국가',
+    country: '배송가능국가',
     platform: '플랫폼',
     category: '카테고리',
     image: '이미지',
@@ -276,14 +275,13 @@ const DETAIL_LABELS: Record<DetailLang, {
     opinions: '의견 수',
     createdAt: '등록 시각',
     none: '없음',
-    countries: { KRW: '한국', USD: '미국', JPY: '일본' },
     star: (n) => `${n}성`,
   },
   en: {
     intro: (id) => `Roar! I am BuyKing, the Shopping Conqueror of Saleplaza!\nHere is the full loot for product ID ${id}!\n\n`,
     id: 'Product ID',
     title: 'Title',
-    country: 'Country',
+    country: 'Ships to',
     platform: 'Platform',
     category: 'Category',
     image: 'Image',
@@ -311,14 +309,13 @@ const DETAIL_LABELS: Record<DetailLang, {
     opinions: 'Opinions',
     createdAt: 'Listed at',
     none: 'none',
-    countries: { KRW: 'Korea', USD: 'United States', JPY: 'Japan' },
     star: (n) => `${n}-star`,
   },
   ja: {
     intro: (id) => `ガハハ！余はセールプラザのショッピング支配者、獅子王バイキングである！\n商品ID ${id}の詳細な戦利品を見よ！\n\n`,
     id: '商品ID',
     title: 'タイトル',
-    country: '国',
+    country: '配送可能国',
     platform: 'プラットフォーム',
     category: 'カテゴリ',
     image: '画像',
@@ -346,10 +343,17 @@ const DETAIL_LABELS: Record<DetailLang, {
     opinions: '意見数',
     createdAt: '登録日時',
     none: 'なし',
-    countries: { KRW: '韓国', USD: '米国', JPY: '日本' },
     star: (n) => `${n}つ星`,
   },
 };
+
+// PRODUCT_SHIPPING_REGIONS.region_code 와 같은 값. 지금은 currency로만 분류한다.
+function shippingRegionCode(currency: string): string {
+  if (currency === 'KRW') return 'KR';
+  if (currency === 'USD') return 'US';
+  if (currency === 'JPY') return 'JP';
+  return '';
+}
 
 function langFromCurrency(currency: string): DetailLang {
   if (currency === 'USD') return 'en';
@@ -410,7 +414,7 @@ function formatProductDetail(product: any, id: string): string {
   const currency = String(product.currency || product.CURRENCY || 'KRW');
   const lang = langFromCurrency(currency);
   const label = DETAIL_LABELS[lang];
-  const country = label.countries[currency] || currency;
+  const country = shippingRegionCode(currency);
   const title = getTitle(product);
   const image = pickDetailImage(product);
   const history = parsePriceHistory(product.price_history || product.PRICE_HISTORY);
@@ -424,7 +428,7 @@ function formatProductDetail(product: any, id: string): string {
 
   push(label.id, id);
   push(label.title, title || label.none);
-  push(label.country, `${country} (${currency})`);
+  push(label.country, country || label.none);
   push(label.platform, displayValue(product.platform || product.PLATFORM, label.none));
   push(label.category, displayValue(product.category || product.CATEGORY, label.none));
   push(label.image, image || label.none);
@@ -560,7 +564,7 @@ export const createServer = () => {
 
   server.tool(
     'result_detail_GLOBAL',
-    '검색 결과의 상품 ID로 상품 단건 상세를 조회합니다. 가격 히스토리, 세일프라자 링크, 구매 링크를 포함합니다. 국가(시장)는 currency만으로 구분합니다 (KRW 한국, USD 미국, JPY 일본). 제목은 title만 반환합니다. 이미지는 모든 상품에서 origin_img_url만 사용합니다. 숨김 상품은 없는 상품과 같은 답만 반환합니다. 특정 상품을 더 볼 때 이 도구를 호출하세요.',
+    '검색 결과의 상품 ID로 상품 단건 상세를 조회합니다. 가격 히스토리, 세일프라자 링크, 구매 링크를 포함합니다. 배송가능국가는 currency로 PRODUCT_SHIPPING_REGIONS 국가코드를 내려줍니다 (KRW=KR, USD=US, JPY=JP). 제목은 title만 반환합니다. 이미지는 모든 상품에서 origin_img_url만 사용합니다. 숨김 상품은 없는 상품과 같은 답만 반환합니다. 특정 상품을 더 볼 때 이 도구를 호출하세요.',
     {
       id: z.union([z.string(), z.number()]).describe("직전 검색 결과의 상품 ID. 예: 25023"),
     },
