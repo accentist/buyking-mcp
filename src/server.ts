@@ -68,10 +68,9 @@ function getRegionFlag(currency?: string): string {
   return '🇰🇷KR';
 }
 
-// ─── 제목 선택 (다국어 우선순위) ────────────────────────────────────────────────
-function getTitle(item: any, lang: string): string {
-  if (lang === 'en') return item.title_en || item.TITLE_EN || item.title || item.TITLE || '';
-  if (lang === 'ja') return item.title_ja || item.TITLE_JA || item.title || item.TITLE || '';
+// ─── 제목 선택 ────────────────────────────────────────────────────────────────
+// title_en, title_ja는 미사용 컬럼이다. 모든 국가는 title만 반환한다.
+function getTitle(item: any): string {
   return item.title || item.TITLE || '';
 }
 
@@ -157,8 +156,9 @@ export const searchBuykingSemantic = async ({
     for (const item of products) {
       const originalPrice = item.original_price || item.ORIGINAL_PRICE || item.price || item.PRICE;
       const currentPrice = item.price || item.PRICE;
-      const title = getTitle(item, finalLang);
+      const title = getTitle(item);
       const currency = item.currency || item.CURRENCY || 'KRW';
+      const productId = item.id || item.ID;
 
       // 할인율 계산
       let discountStr = "";
@@ -174,6 +174,7 @@ export const searchBuykingSemantic = async ({
       const regionFlag = isGlobal ? `[${getRegionFlag(currency)}] ` : '';
 
       markdown += `🦁 ${regionFlag}**${categoryStr}${platformStr} ${title}**\n`;
+      markdown += `- 상품 ID: ${productId}\n`;
 
       // 가격 포맷팅: GLOBAL은 원래 통화 코드 표시, region별은 통화 기호 사용
       const formattedOriginal = isGlobal
@@ -191,7 +192,7 @@ export const searchBuykingSemantic = async ({
         markdown += `> 💬 ${persona.aiComment}: "${comment}"\n`;
       }
 
-      markdown += `- [${persona.cta}](https://saleplaza.com/${item.id || item.ID})\n\n`;
+      markdown += `- [${persona.cta}](https://saleplaza.com/${productId})\n\n`;
     }
 
     return {
@@ -205,6 +206,303 @@ export const searchBuykingSemantic = async ({
   }
 };
 
+// ─── 단건 상세 (result_detail_GLOBAL) ───────────────────────────────────────────
+type DetailLang = 'ko' | 'en' | 'ja';
+
+const DETAIL_LABELS: Record<DetailLang, {
+  intro: (id: string) => string;
+  id: string;
+  title: string;
+  country: string;
+  platform: string;
+  category: string;
+  image: string;
+  saleplaza: string;
+  buyLink: string;
+  originalPrice: string;
+  currentPrice: string;
+  discount: string;
+  targetPrice: string;
+  history: string;
+  noHistory: string;
+  lowest: string;
+  highest: string;
+  vsFirst: string;
+  dealStatus: string;
+  dealCheckedAt: string;
+  spScore: string;
+  dealchelin: string;
+  customerGrade: string;
+  buykingComment: string;
+  recommendReason: string;
+  clicks: string;
+  likes: string;
+  dislikes: string;
+  opinions: string;
+  createdAt: string;
+  none: string;
+  countries: Record<string, string>;
+  star: (n: number) => string;
+}> = {
+  ko: {
+    intro: (id) => `크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 Bㅏ이킹이다!\n상품 ID ${id}의 상세 전리품을 펼쳐 보이노라!\n\n`,
+    id: '상품 ID',
+    title: '제목',
+    country: '국가',
+    platform: '플랫폼',
+    category: '카테고리',
+    image: '이미지',
+    saleplaza: '세일프라자',
+    buyLink: '구매 링크',
+    originalPrice: '원래 가격',
+    currentPrice: '지금 혜택가',
+    discount: '할인',
+    targetPrice: '목표가',
+    history: '가격 히스토리',
+    noHistory: '아직 기록된 가격 히스토리가 없다',
+    lowest: '기간 내 최저가',
+    highest: '기간 내 최고가',
+    vsFirst: '첫 기록 대비 현재가',
+    dealStatus: '딜 상태',
+    dealCheckedAt: '딜 확인 시각',
+    spScore: 'SP Score',
+    dealchelin: '딜슐랭',
+    customerGrade: '고객 등급',
+    buykingComment: 'Bㅏ이킹 曰',
+    recommendReason: '추천 이유',
+    clicks: '클릭 수',
+    likes: '좋아요',
+    dislikes: '싫어요',
+    opinions: '의견 수',
+    createdAt: '등록 시각',
+    none: '없음',
+    countries: { KRW: '한국', USD: '미국', JPY: '일본' },
+    star: (n) => `${n}성`,
+  },
+  en: {
+    intro: (id) => `Roar! I am BuyKing, the Shopping Conqueror of Saleplaza!\nHere is the full loot for product ID ${id}!\n\n`,
+    id: 'Product ID',
+    title: 'Title',
+    country: 'Country',
+    platform: 'Platform',
+    category: 'Category',
+    image: 'Image',
+    saleplaza: 'Saleplaza',
+    buyLink: 'Buy link',
+    originalPrice: 'Original',
+    currentPrice: 'Deal Price',
+    discount: 'Discount',
+    targetPrice: 'Target price',
+    history: 'Price history',
+    noHistory: 'No price history recorded yet',
+    lowest: 'Lowest in range',
+    highest: 'Highest in range',
+    vsFirst: 'Current vs first record',
+    dealStatus: 'Deal status',
+    dealCheckedAt: 'Deal checked at',
+    spScore: 'SP Score',
+    dealchelin: 'Dealchelin',
+    customerGrade: 'Customer grade',
+    buykingComment: 'BuyKing says',
+    recommendReason: 'Recommend reason',
+    clicks: 'Clicks',
+    likes: 'Likes',
+    dislikes: 'Dislikes',
+    opinions: 'Opinions',
+    createdAt: 'Listed at',
+    none: 'none',
+    countries: { KRW: 'Korea', USD: 'United States', JPY: 'Japan' },
+    star: (n) => `${n}-star`,
+  },
+  ja: {
+    intro: (id) => `ガハハ！余はセールプラザのショッピング支配者、獅子王バイキングである！\n商品ID ${id}の詳細な戦利品を見よ！\n\n`,
+    id: '商品ID',
+    title: 'タイトル',
+    country: '国',
+    platform: 'プラットフォーム',
+    category: 'カテゴリ',
+    image: '画像',
+    saleplaza: 'セールプラザ',
+    buyLink: '購入リンク',
+    originalPrice: '元の価格',
+    currentPrice: '特価',
+    discount: '割引',
+    targetPrice: '目標価格',
+    history: '価格履歴',
+    noHistory: 'まだ価格履歴の記録はない',
+    lowest: '期間内最安値',
+    highest: '期間内最高値',
+    vsFirst: '最初の記録と比べた現在価格',
+    dealStatus: 'ディール状態',
+    dealCheckedAt: 'ディール確認時刻',
+    spScore: 'SP Score',
+    dealchelin: 'ディールシュラン',
+    customerGrade: '顧客グレード',
+    buykingComment: 'バイキング曰く',
+    recommendReason: 'おすすめ理由',
+    clicks: 'クリック数',
+    likes: 'いいね',
+    dislikes: 'よくない',
+    opinions: '意見数',
+    createdAt: '登録日時',
+    none: 'なし',
+    countries: { KRW: '韓国', USD: '米国', JPY: '日本' },
+    star: (n) => `${n}つ星`,
+  },
+};
+
+function langFromCurrency(currency: string): DetailLang {
+  if (currency === 'USD') return 'en';
+  if (currency === 'JPY') return 'ja';
+  return 'ko';
+}
+
+function isPubliclyVisible(product: any): boolean {
+  const value = product?.is_visible ?? product?.IS_VISIBLE;
+  return value === 1 || value === true || value === '1';
+}
+
+function pickDetailImage(product: any): string {
+  const origin = product.origin_img_url || product.ORIGIN_IMG_URL || '';
+  return origin ? String(origin) : '';
+}
+
+function saleplazaProductUrl(id: string, currency: string): string {
+  if (currency === 'USD') return `https://saleplaza.com/en/${id}`;
+  if (currency === 'JPY') return `https://saleplaza.com/ja/${id}`;
+  return `https://saleplaza.com/${id}`;
+}
+
+function formatMoney(amount: unknown, currency: string): string | null {
+  const n = Number(amount);
+  if (!Number.isFinite(n)) return null;
+  return `${currency} ${n.toLocaleString('en-US')}`;
+}
+
+function displayValue(value: unknown, none: string): string {
+  if (value === null || value === undefined || value === '') return none;
+  return String(value);
+}
+
+function parsePriceHistory(raw: unknown): Array<{ date: string; price: number }> {
+  if (!raw) return [];
+  try {
+    const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((row) => row && row.date && Number.isFinite(Number(row.price)))
+      .map((row) => ({ date: String(row.date), price: Number(row.price) }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+  } catch {
+    return [];
+  }
+}
+
+function dealchelinStar(spScore: unknown): number {
+  const score = Number(spScore);
+  if (!Number.isFinite(score)) return 1;
+  if (score >= 85) return 3;
+  if (score >= 70) return 2;
+  return 1;
+}
+
+function formatProductDetail(product: any, id: string): string {
+  const currency = String(product.currency || product.CURRENCY || 'KRW');
+  const lang = langFromCurrency(currency);
+  const label = DETAIL_LABELS[lang];
+  const country = label.countries[currency] || currency;
+  const title = getTitle(product);
+  const image = pickDetailImage(product);
+  const history = parsePriceHistory(product.price_history || product.PRICE_HISTORY);
+  const currentPrice = Number(product.price ?? product.PRICE);
+  const originalPrice = product.original_price ?? product.ORIGINAL_PRICE;
+  const lines: string[] = [label.intro(id)];
+
+  const push = (name: string, value: string) => {
+    lines.push(`- ${name}: ${value}`);
+  };
+
+  push(label.id, id);
+  push(label.title, title || label.none);
+  push(label.country, `${country} (${currency})`);
+  push(label.platform, displayValue(product.platform || product.PLATFORM, label.none));
+  push(label.category, displayValue(product.category || product.CATEGORY, label.none));
+  push(label.image, image || label.none);
+  push(label.saleplaza, saleplazaProductUrl(id, currency));
+  push(label.buyLink, displayValue(product.link || product.LINK, label.none));
+  push(label.originalPrice, formatMoney(originalPrice, currency) || label.none);
+  push(label.currentPrice, formatMoney(currentPrice, currency) || label.none);
+
+  const discountRaw = product.discount ?? product.DISCOUNT;
+  const discountNum = Number(discountRaw);
+  push(label.discount, Number.isFinite(discountNum) ? `${discountNum}%` : label.none);
+  push(label.targetPrice, formatMoney(product.target_price ?? product.TARGET_PRICE, currency) || label.none);
+
+  if (history.length === 0) {
+    push(label.history, label.noHistory);
+  } else {
+    const historyLines = history.map((row) => `  - ${row.date}: ${formatMoney(row.price, currency)}`).join('\n');
+    lines.push(`- ${label.history}:\n${historyLines}`);
+    const prices = history.map((row) => row.price);
+    push(label.lowest, formatMoney(Math.min(...prices), currency) || label.none);
+    push(label.highest, formatMoney(Math.max(...prices), currency) || label.none);
+    if (Number.isFinite(currentPrice)) {
+      const diff = currentPrice - history[0].price;
+      const sign = diff > 0 ? '+' : '';
+      push(label.vsFirst, `${currency} ${sign}${diff.toLocaleString('en-US')}`);
+    }
+  }
+
+  push(label.dealStatus, displayValue(product.deal_status || product.DEAL_STATUS, label.none));
+  push(label.dealCheckedAt, displayValue(product.deal_checked_at || product.DEAL_CHECKED_AT, label.none));
+  push(label.spScore, displayValue(product.sp_score ?? product.SP_SCORE, label.none));
+  push(label.dealchelin, label.star(dealchelinStar(product.sp_score ?? product.SP_SCORE)));
+  push(label.customerGrade, displayValue(product.customer_grade || product.CUSTOMER_GRADE, label.none));
+  push(label.buykingComment, displayValue(product.buyking_comment || product.BUYKING_COMMENT, label.none));
+  push(label.recommendReason, displayValue(product.recommend_reason || product.RECOMMEND_REASON, label.none));
+  push(label.clicks, displayValue(product.click_count ?? product.CLICK_COUNT, label.none));
+  push(label.likes, displayValue(product.likes_count ?? product.LIKES_COUNT, label.none));
+  push(label.dislikes, displayValue(product.dislikes_count ?? product.DISLIKES_COUNT, label.none));
+  push(label.opinions, displayValue(product.opinion_cnt ?? product.OPINION_CNT, label.none));
+  push(label.createdAt, displayValue(product.created_at || product.CREATED_AT, label.none));
+
+  return lines.join('\n').trim();
+}
+
+export const getBuykingProductDetail = async ({ id }: { id: string | number }) => {
+  const persona = PERSONA.ko;
+  const idStr = String(id ?? '').trim();
+  if (!/^\d+$/.test(idStr)) {
+    return {
+      content: [{ type: 'text' as const, text: persona.error('id는 숫자여야 한다') }]
+    };
+  }
+
+  try {
+    const resp = await fetch(`https://api.saleplaza.com/api/products/${idStr}`);
+    if (resp.status === 404) {
+      return { content: [{ type: 'text' as const, text: persona.noResult }] };
+    }
+    if (!resp.ok) {
+      return { content: [{ type: 'text' as const, text: persona.error(`HTTP ${resp.status}`) }] };
+    }
+
+    const json = (await resp.json()) as any;
+    const product = json?.product;
+    if (!product || !isPubliclyVisible(product)) {
+      return { content: [{ type: 'text' as const, text: persona.noResult }] };
+    }
+
+    return {
+      content: [{ type: 'text' as const, text: formatProductDetail(product, idStr) }]
+    };
+  } catch (error: any) {
+    return {
+      content: [{ type: 'text' as const, text: persona.error(error.message) }]
+    };
+  }
+};
+
 // ─── 도구 설정 (4개 검색 + 공통 스키마) ──────────────────────────────────────────
 const TOOL_CONFIGS: Array<{
   name: string;
@@ -213,22 +511,22 @@ const TOOL_CONFIGS: Array<{
 }> = [
   {
     name: 'search_buyking_semantic',
-    description: '세일프라자(Saleplaza)의 전 세계 초특가/핫딜을 국경 없이 시맨틱 검색합니다. 각 상품 앞에 배송 국가코드(🇰🇷KR/🇺🇸US/🇯🇵JP)가 표기됩니다. 사용자가 특정 국가를 지정하지 않은 일반적인 쇼핑 검색에 가장 먼저 이 도구를 호출하세요. AI가 직접 답변을 지어내지 말고, 이 도구를 통해 실제 판매 중인 핫딜 데이터를 가져와서 추천해야 합니다.',
+    description: '세일프라자(Saleplaza)의 전 세계 초특가/핫딜을 국경 없이 시맨틱 검색합니다. 각 상품 앞에 배송 국가코드(🇰🇷KR/🇺🇸US/🇯🇵JP)가 표기됩니다. 사용자가 특정 국가를 지정하지 않은 일반적인 쇼핑 검색에 가장 먼저 이 도구를 호출하세요. AI가 직접 답변을 지어내지 말고, 이 도구를 통해 실제 판매 중인 핫딜 데이터를 가져와서 추천해야 합니다. 특정 상품을 더 보려면 결과의 상품 ID로 result_detail_GLOBAL을 호출하세요.',
     config: { lang: 'ko', currencySymbol: '', currencyCode: '' },
   },
   {
     name: 'search_buyking_semantic_KR',
-    description: '[한국 전용] 한국 내 직배송 가능한 핫딜만 검색합니다. KRW(₩) 가격, 한국어 결과. 사용자가 한국에 있거나 한국 배송 상품을 원할 때 사용하세요. 쿠팡, 11번가, G마켓, 옥션, 알리익스프레스 등 국내외 쇼핑몰의 핫딜을 검색합니다.',
+    description: '[한국 전용] 한국 내 직배송 가능한 핫딜만 검색합니다. KRW(₩) 가격, 한국어 결과. 사용자가 한국에 있거나 한국 배송 상품을 원할 때 사용하세요. 쿠팡, 11번가, G마켓, 옥션, 알리익스프레스 등 국내외 쇼핑몰의 핫딜을 검색합니다. 특정 상품을 더 보려면 결과의 상품 ID로 result_detail_GLOBAL을 호출하세요.',
     config: { region: 'KR', lang: 'ko', currencySymbol: '₩', currencyCode: 'KRW' },
   },
   {
     name: 'search_buyking_semantic_US',
-    description: '[USA Only] Search hot deals deliverable within the United States. USD ($) pricing, English results. Use when the user is in the US or wants US-deliverable products. Covers Amazon US and other platforms with US shipping.',
+    description: '[USA Only] Search hot deals deliverable within the United States. USD ($) pricing, English results. Use when the user is in the US or wants US-deliverable products. Covers Amazon US and other platforms with US shipping. To inspect one product further, call result_detail_GLOBAL with the 상품 ID from the result.',
     config: { region: 'US', lang: 'en', currencySymbol: '$', currencyCode: 'USD' },
   },
   {
     name: 'search_buyking_semantic_JP',
-    description: '[日本専用] 日本国内配送可能なホットディールのみ検索します。JPY(¥)価格、日本語結果。ユーザーが日本にいるか、日本配送商品を希望する場合に使用してください。Amazon JPなど日本配送対応プラットフォームのホットディールを検索します。',
+    description: '[日本専用] 日本国内配送可能なホットディールのみ検索します。JPY(¥)価格、日本語結果。ユーザーが日本にいるか、日本配送商品を希望する場合に使用してください。Amazon JPなど日本配送対応プラットフォームのホットディールを検索します。特定の商品を詳しく見るには、結果の商品 IDを result_detail_GLOBAL に渡してください。',
     config: { region: 'JP', lang: 'ja', currencySymbol: '¥', currencyCode: 'JPY' },
   },
 ];
@@ -245,7 +543,7 @@ const searchParamsSchema = {
 export const createServer = () => {
   const server = new McpServer({
     name: "BuyKing-MCP",
-    version: "1.2.0"
+    version: "1.2.5"
   });
 
   // 4개 검색 도구 일괄 등록 (동일 파라미터 스키마, 다른 region/lang/currency config)
@@ -260,6 +558,17 @@ export const createServer = () => {
     );
   }
 
+  server.tool(
+    'result_detail_GLOBAL',
+    '검색 결과의 상품 ID로 상품 단건 상세를 조회합니다. 가격 히스토리, 세일프라자 링크, 구매 링크를 포함합니다. 국가(시장)는 currency만으로 구분합니다 (KRW 한국, USD 미국, JPY 일본). 제목은 title만 반환합니다. 이미지는 모든 상품에서 origin_img_url만 사용합니다. 숨김 상품은 없는 상품과 같은 답만 반환합니다. 특정 상품을 더 볼 때 이 도구를 호출하세요.',
+    {
+      id: z.union([z.string(), z.number()]).describe("직전 검색 결과의 상품 ID. 예: 25023"),
+    },
+    async (args) => {
+      return await getBuykingProductDetail({ id: args.id });
+    }
+  );
+
   // 서버 정보 도구
   server.tool(
     "get_server_info",
@@ -269,7 +578,7 @@ export const createServer = () => {
       return {
         content: [{
           type: "text",
-          text: `크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 Bㅏ이킹이다!\n\n현재 BuyKing MCP 서버 정보:\n- 버전: 1.2.0\n- 서버명: BuyKing-MCP\n- 제공 도구 (5개):\n  🌍 search_buyking_semantic — GLOBAL 전체 검색 (국가코드 표기)\n  🇰🇷 search_buyking_semantic_KR — 한국 배송 (KRW/한국어)\n  🇺🇸 search_buyking_semantic_US — 미국 배송 (USD/English)\n  🇯🇵 search_buyking_semantic_JP — 일본 배송 (JPY/日本語)\n  ℹ️ get_server_info — 서버 정보\n- 엔드포인트: https://buyking.saleplaza.com/message\n\n계속해서 핫딜 정보를 물어보라!`
+          text: `크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 Bㅏ이킹이다!\n\n현재 BuyKing MCP 서버 정보:\n- 버전: 1.2.5\n- 서버명: BuyKing-MCP\n- 제공 도구 (6개):\n  🌍 search_buyking_semantic — GLOBAL 전체 검색 (국가코드 표기)\n  🇰🇷 search_buyking_semantic_KR — 한국 배송 (KRW/한국어)\n  🇺🇸 search_buyking_semantic_US — 미국 배송 (USD/English)\n  🇯🇵 search_buyking_semantic_JP — 일본 배송 (JPY/日本語)\n  🔎 result_detail_GLOBAL — 상품 ID 단건 상세 (가격 히스토리)\n  ℹ️ get_server_info — 서버 정보\n- 엔드포인트: https://buyking.saleplaza.com/message\n\n계속해서 핫딜 정보를 물어보라!`
         }]
       };
     }

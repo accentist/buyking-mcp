@@ -18,7 +18,7 @@
 - **대규모 다국어 사전 탑재**: 1,000개 이상의 핵심 쇼핑 키워드(영어, 일본어 ↔ 한국어) 해시맵을 통해, AI의 오역(예: mouse를 쥐로 번역) 없이 정확하고 초고속으로 전 세계 상품을 매칭합니다.
 - **입력 언어별 국가 최우선 정렬 (Smart Priority)**: 사용자가 입력한 언어(영어, 일본어, 한국어)를 0.1초 만에 자동 감지하여, 해당 국가의 통화(USD, JPY, KRW)를 사용하는 핫딜 상품을 1순위로 상단에 노출합니다. (예: 영문으로 `apple` 검색 시 🇺🇸US 상품 최우선 출력!)
 
-### 제공하는 도구 (Tools) — 5개
+### 제공하는 도구 (Tools) — 6개
 
 #### 🌍 글로벌 검색
 - **`search_buyking_semantic`**: 전 세계 핫딜을 국경 없이 시맨틱 검색합니다. 각 상품 앞에 배송 국가코드(🇰🇷KR/🇺🇸US/🇯🇵JP)가 표기됩니다.
@@ -31,6 +31,9 @@
 
 #### 🇯🇵 일본 전용
 - **`search_buyking_semantic_JP`**: 日本国内配送可能なホットディールのみ検索。JPY(¥)価格、日本語結果。
+
+#### 🔎 상품 상세
+- **`result_detail_GLOBAL`**: 검색 결과의 상품 ID로 단건 상세와 가격 히스토리를 조회합니다. 국가는 `currency` 기준(KRW 한국, USD 미국, JPY 일본)입니다. 파라미터 `id` (필수).
 
 #### ℹ️ 서버 정보
 - **`get_server_info`**: BuyKing MCP 서버의 버전 정보와 기능 목록을 반환합니다.
@@ -218,7 +221,7 @@ BuyKing MCP Server는 공식 MCP Registry에 등록되어 있습니다.
 
 ### Registry 정보
 - **서버 이름**: `io.github.accentist/buyking-mcp`
-- **버전**: 1.2.1
+- **버전**: 1.2.5
 - **레지스트리**: [registry.modelcontextprotocol.io](https://registry.modelcontextprotocol.io)
 
 ### Registry에서 검색

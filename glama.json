@@ -34,6 +34,10 @@
       "description": "[JP] 日本配送可能ホットディールのみ検索。JPY(¥)、日本語結果。"
     },
     {
+      "name": "result_detail_GLOBAL",
+      "description": "검색 결과의 상품 ID로 단건 상세와 가격 히스토리를 조회합니다. 국가는 currency(KRW/USD/JPY) 기준입니다."
+    },
+    {
       "name": "get_server_info",
       "description": "BuyKing MCP 서버의 현재 구동 상태, API 버전 정보 및 연동 가능한 도구 목록을 반환합니다."
     }

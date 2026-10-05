@@ -3,7 +3,7 @@
   "name": "io.github.accentist/buyking-mcp",
   "title": "BuyKing MCP Server",
   "description": "Saleplaza BuyKing MCP: Semantic search for global shopping hot deals (US/JP/KR).",
-  "version": "1.2.1",
+  "version": "1.2.5",
   "repository": {
     "url": "https://github.com/accentist/buyking-mcp",
     "source": "github"
@@ -12,7 +12,7 @@
     {
       "registryType": "npm",
       "identifier": "buyking-mcp",
-      "version": "1.2.1",
+      "version": "1.2.5",
       "transport": {
         "type": "stdio"
       }

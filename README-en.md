@@ -18,7 +18,7 @@ Find global shopping hot deals smarter without language barriers!
 - **Massive Multilingual Dictionary Built-in**: Accurately and instantly matches global products without AI mistranslation (e.g., translating "mouse" to an animal) using a hashmap of 1,000+ core shopping keywords (English, Japanese ↔ Korean).
 - **Smart Priority Sorting by Input Language**: Automatically detects the user's input language (English, Japanese, Korean) in 0.1 seconds and prioritizes hot deals using that country's currency (USD, JPY, KRW) to the top. (e.g., searching for `apple` in English will show 🇺🇸US products first!)
 
-### Provided Tools — 5
+### Provided Tools — 6
 
 #### 🌍 Global Search
 - **`search_buyking_semantic`**: Semantically searches hot deals worldwide without borders. Each product is labeled with a shipping country code (🇰🇷KR/🇺🇸US/🇯🇵JP).
@@ -31,6 +31,9 @@ Find global shopping hot deals smarter without language barriers!
 
 #### 🇯🇵 Japan Exclusive
 - **`search_buyking_semantic_JP`**: Searches only hot deals deliverable within Japan. JPY(¥) pricing, Japanese results.
+
+#### 🔎 Product Detail
+- **`result_detail_GLOBAL`**: Fetches one product and its price history by the product ID from a search result. Country follows `currency` (KRW Korea, USD United States, JPY Japan). Parameter `id` (required).
 
 #### ℹ️ Server Info
 - **`get_server_info`**: Returns the version information and feature list of the BuyKing MCP server.

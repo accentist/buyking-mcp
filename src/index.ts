@@ -1,4 +1,4 @@
-import { createServer, searchBuykingSemantic } from "./server.js";
+import { createServer, getBuykingProductDetail, searchBuykingSemantic } from "./server.js";
 
 // ─── 도구명 → RegionConfig 매핑 (JSON-RPC 핸들러용) ───────────────────────────
 const TOOL_REGION_MAP: Record<string, {
@@ -14,7 +14,7 @@ const TOOL_REGION_MAP: Record<string, {
 };
 
 // ─── 서버 정보 응답 (get_server_info 공통) ─────────────────────────────────────
-const SERVER_INFO_TEXT = `Roar! I am BuyKing, the Shopping Conqueror of Saleplaza!\n\nBuyKing MCP Server Info:\n- Version: 1.2.1\n- Server: BuyKing-MCP\n- Tools (5):\n  🌍 search_buyking_semantic — Global search across all markets\n  🇰🇷 search_buyking_semantic_KR — Korea delivery (KRW/Korean)\n  🇺🇸 search_buyking_semantic_US — US delivery (USD/English)\n  🇯🇵 search_buyking_semantic_JP — Japan delivery (JPY/Japanese)\n  ℹ️ get_server_info — Server info\n- Endpoint: https://buyking.saleplaza.com/message\n\nAsk me for hot deals anytime!`;
+const SERVER_INFO_TEXT = `Roar! I am BuyKing, the Shopping Conqueror of Saleplaza!\n\nBuyKing MCP Server Info:\n- Version: 1.2.5\n- Server: BuyKing-MCP\n- Tools (6):\n  🌍 search_buyking_semantic — Global search across all markets\n  🇰🇷 search_buyking_semantic_KR — Korea delivery (KRW/Korean)\n  🇺🇸 search_buyking_semantic_US — US delivery (USD/English)\n  🇯🇵 search_buyking_semantic_JP — Japan delivery (JPY/Japanese)\n  🔎 result_detail_GLOBAL — Product detail by ID (price history)\n  ℹ️ get_server_info — Server info\n- Endpoint: https://buyking.saleplaza.com/message\n\nAsk me for hot deals anytime!`;
 
 export default {
   async fetch(request: Request, env: any, ctx: any): Promise<Response> {
@@ -33,13 +33,16 @@ Allow: /
       const llmsText = `# BuyKing MCP Server
 이 서버는 Saleplaza(세일프라자)의 쇼핑 지배자, Bㅏ이킹(BuyKing) 페르소나를 제공하는 MCP(Model Context Protocol) 서버입니다.
 
-## 제공하는 기능 (Tools) — 5개
+## 제공하는 기능 (Tools) — 6개
 
 ### 검색 도구 (4개)
 - \`search_buyking_semantic\`: [GLOBAL] 전 세계 핫딜을 국경 없이 시맨틱 검색합니다. 각 상품 앞에 배송 국가코드(🇰🇷KR/🇺🇸US/🇯🇵JP)가 표기됩니다.
 - \`search_buyking_semantic_KR\`: [한국] 한국 내 직배송 가능 핫딜만 검색합니다. KRW(₩) 가격, 한국어 결과.
 - \`search_buyking_semantic_US\`: [USA] US-deliverable hot deals only. USD($) pricing, English results.
 - \`search_buyking_semantic_JP\`: [日本] 日本配送可能ホットディールのみ。JPY(¥)、日本語結果。
+
+### 상세 도구 (1개)
+- \`result_detail_GLOBAL\`: 검색 결과의 상품 ID로 단건 상세와 가격 히스토리를 조회합니다. 국가 구분은 currency(KRW/USD/JPY) 기준입니다.
 
 ### 유틸리티 도구 (1개)
 - \`get_server_info\`: BuyKing MCP 서버 버전/상태 정보를 반환합니다.
@@ -50,6 +53,9 @@ Allow: /
 - \`category\` (선택): 카테고리 필터
 - \`platform\` (선택): 쇼핑몰 필터
 - \`sort\` (선택): 정렬 조건
+
+\`result_detail_GLOBAL\` 파라미터:
+- \`id\` (필수): 검색 결과의 상품 ID
 
 ## 연결 방법
 - 이 서버는 MCP 프로토콜을 준수합니다.
@@ -64,7 +70,7 @@ Allow: /
         "mcpVersion": "2024-11-05",
         "server": {
           "name": "buyking-mcp",
-          "version": "1.2.0",
+          "version": "1.2.5",
           "description": "세일프라자 AI 사자왕 Bㅏ이킹의 핫딜 시맨틱 검색 서버 (글로벌/한국/미국/일본 지원)"
         },
         "endpoints": {
@@ -75,6 +81,7 @@ Allow: /
           { "name": "search_buyking_semantic_KR", "description": "[KR] 한국 배송 핫딜 검색 (KRW/한국어)" },
           { "name": "search_buyking_semantic_US", "description": "[US] 미국 배송 핫딜 검색 (USD/English)" },
           { "name": "search_buyking_semantic_JP", "description": "[JP] 일본 배송 핫딜 검색 (JPY/日本語)" },
+          { "name": "result_detail_GLOBAL", "description": "상품 ID 단건 상세와 가격 히스토리. 국가는 currency 기준" },
           { "name": "get_server_info", "description": "서버 버전/상태 정보 반환" }
         ]
       };
@@ -94,23 +101,28 @@ Allow: /
               tools: [
                 {
                   name: "search_buyking_semantic",
-                  description: "[GLOBAL] Semantically search hot deals worldwide across all markets (KR/US/JP). Each result is labeled with a shipping country code. Supports Korean, English, and Japanese keywords with smart language-priority sorting.",
+                  description: "[GLOBAL] Semantically search hot deals worldwide across all markets (KR/US/JP). Each result is labeled with a shipping country code. Supports Korean, English, and Japanese keywords with smart language-priority sorting. To inspect one product, call result_detail_GLOBAL with its 상품 ID.",
                   inputSchema: { type: "object", properties: { keyword: { type: "string", description: "Product keyword to search (e.g., 'wireless mouse', '무선 마우스', 'ワイヤレスマウス')" }, category: { type: "string", description: "Category filter (optional)" }, platform: { type: "string", description: "Platform filter (optional): coupang, 11st, gmarket, aliexpress" }, sort: { type: "string", description: "Sort order (optional): newest, price_asc, price_desc, click_desc" } }, required: ["keyword"] }
                 },
                 {
                   name: "search_buyking_semantic_KR",
-                  description: "[KOREA] Search hot deals deliverable within South Korea. Returns KRW(₩) pricing and Korean product information.",
+                  description: "[KOREA] Search hot deals deliverable within South Korea. Returns KRW(₩) pricing and Korean product information. To inspect one product, call result_detail_GLOBAL with its 상품 ID.",
                   inputSchema: { type: "object", properties: { keyword: { type: "string", description: "Product keyword to search" }, category: { type: "string" }, platform: { type: "string" }, sort: { type: "string" } }, required: ["keyword"] }
                 },
                 {
                   name: "search_buyking_semantic_US",
-                  description: "[USA] Search hot deals deliverable within the United States. Returns USD($) pricing and English product information.",
+                  description: "[USA] Search hot deals deliverable within the United States. Returns USD($) pricing and English product information. To inspect one product, call result_detail_GLOBAL with its 상품 ID.",
                   inputSchema: { type: "object", properties: { keyword: { type: "string", description: "Product keyword to search" }, category: { type: "string" }, platform: { type: "string" }, sort: { type: "string" } }, required: ["keyword"] }
                 },
                 {
                   name: "search_buyking_semantic_JP",
-                  description: "[JAPAN] Search hot deals deliverable within Japan. Returns JPY(¥) pricing and Japanese product information.",
+                  description: "[JAPAN] Search hot deals deliverable within Japan. Returns JPY(¥) pricing and Japanese product information. To inspect one product, call result_detail_GLOBAL with its 상품 ID.",
                   inputSchema: { type: "object", properties: { keyword: { type: "string", description: "Product keyword to search" }, category: { type: "string" }, platform: { type: "string" }, sort: { type: "string" } }, required: ["keyword"] }
+                },
+                {
+                  name: "result_detail_GLOBAL",
+                  description: "Fetch one product by the 상품 ID from a previous search. Returns price history, Saleplaza link, and the store buy link. Country is determined only by currency (KRW Korea, USD United States, JPY Japan). Hidden products are answered as not found.",
+                  inputSchema: { type: "object", properties: { id: { type: "string", description: "Product ID from the previous search result, e.g. 25023" } }, required: ["id"] }
                 },
                 {
                   name: "get_server_info",
@@ -138,6 +150,15 @@ Allow: /
             }), { headers: { "Content-Type": "application/json; charset=utf-8" } });
           }
           
+          if (toolName === "result_detail_GLOBAL") {
+            const result = await getBuykingProductDetail({ id: args?.id });
+            return new Response(JSON.stringify({
+              jsonrpc: "2.0",
+              id: (body as any).id,
+              result: result
+            }), { headers: { "Content-Type": "application/json; charset=utf-8" } });
+          }
+
           // 서버 정보 도구
           if (toolName === "get_server_info") {
             return new Response(JSON.stringify({
@@ -156,6 +177,6 @@ Allow: /
       }
     }
 
-    return new Response("BuyKing MCP Server v1.2.1 running on Cloudflare Workers. Use /message for JSON-RPC.", { status: 200 });
+    return new Response("BuyKing MCP Server v1.2.5 running on Cloudflare Workers. Use /message for JSON-RPC.", { status: 200 });
   }
 };
