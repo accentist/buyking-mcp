@@ -293,6 +293,14 @@ Claude Desktop의 설정 파일에 다음을 추가하세요:
 
 ## 🔌 API 직접 호출
 
+`https://buyking.saleplaza.com/message`는 호출 IP별로 횟수를 셉니다.
+
+- `POST /message`는 모두 1분에 30건까지입니다.
+- 검색 도구와 `result_detail_GLOBAL`은 한국시간 하루 500건의 상품 조회에도 포함됩니다. 자정에 다시 0이 됩니다.
+- `tools/list`와 `get_server_info`는 1분 한도에만 포함됩니다.
+
+한도를 넘기면 HTTP `429`를 반환하고 상품 API는 호출하지 않습니다. `npx buyking-mcp`는 이 Worker를 거치지 않으므로, 이 한도는 HTTP 엔드포인트에 적용됩니다.
+
 ### HTTP JSON-RPC 예시
 
 ```bash

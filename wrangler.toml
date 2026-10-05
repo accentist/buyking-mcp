@@ -9,3 +9,11 @@ routes = [
 
 [observability]
 enabled = true
+
+[[durable_objects.bindings]]
+name = "RATE_LIMITER"
+class_name = "IpRateLimiter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["IpRateLimiter"]

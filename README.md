@@ -263,6 +263,14 @@ Add the following to your Claude Desktop configuration file:
 
 ## 🔌 Direct API Call
 
+`https://buyking.saleplaza.com/message` counts each caller IP.
+
+- Every `POST /message` counts toward 30 requests per minute.
+- Search tools and `result_detail_GLOBAL` also count toward 500 product lookups per day. The day resets at 00:00 Korea Standard Time.
+- `tools/list` and `get_server_info` count toward the minute limit only.
+
+Over the limit the server returns HTTP `429` and does not query the product API. The stdio package `npx buyking-mcp` does not pass through this Worker, so this limit applies to the HTTP endpoint.
+
 ### HTTP JSON-RPC Example
 
 ```bash

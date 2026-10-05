@@ -1,4 +1,43 @@
+import { DAILY_LIMIT } from "./ip-rate-limit.js";
 import { createServer, getBuykingProductDetail, searchBuykingSemantic } from "./server.js";
+import { IpRateLimiter } from "./ip-rate-limiter.js";
+
+export { IpRateLimiter };
+
+const PRODUCT_TOOLS = new Set([
+  "search_buyking_semantic",
+  "search_buyking_semantic_KR",
+  "search_buyking_semantic_US",
+  "search_buyking_semantic_JP",
+  "result_detail_GLOBAL",
+]);
+
+function rateLimitResponse(id: unknown, decision: { scope: "minute" | "day"; retryAfter: number }): Response {
+  const message = decision.scope === "day"
+    ? `크하하! 이 IP는 하루에 상품 조회 ${DAILY_LIMIT}번까지만 할 수 있다. 한국시간 자정 이후에 다시 오라.`
+    : "크하하! 이 IP는 1분에 30번까지만 호출할 수 있다. 잠시 후 다시 오라.";
+  return new Response(JSON.stringify({
+    jsonrpc: "2.0",
+    id: id ?? null,
+    error: { code: -32029, message },
+  }), {
+    status: 429,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Retry-After": String(decision.retryAfter),
+    },
+  });
+}
+
+async function enforceRateLimit(request: Request, env: any, countDaily: boolean, id: unknown): Promise<Response | null> {
+  const ns = env?.RATE_LIMITER;
+  if (!ns) return null;
+  const ip = request.headers.get("CF-Connecting-IP")?.trim() || "unknown";
+  const stub = ns.get(ns.idFromName(ip));
+  const decision = await stub.consume(countDaily);
+  if (decision.ok) return null;
+  return rateLimitResponse(id, decision);
+}
 
 // ─── 도구명 → RegionConfig 매핑 (JSON-RPC 핸들러용) ───────────────────────────
 const TOOL_REGION_MAP: Record<string, {
@@ -90,9 +129,21 @@ Allow: /
     
     // ─── 4. MCP JSON-RPC 엔드포인트 ──────────────────────────────────────────
     if (request.method === "POST" && url.pathname === "/message") {
+      let body: any;
       try {
-        const body = await request.json();
+        body = await request.json();
+      } catch (e: any) {
+        const blocked = await enforceRateLimit(request, env, false, null);
+        if (blocked) return blocked;
+        return new Response(e.message, { status: 500 });
+      }
 
+      const toolName = body?.method === "tools/call" ? body?.params?.name : undefined;
+      const countDaily = typeof toolName === "string" && PRODUCT_TOOLS.has(toolName);
+      const blocked = await enforceRateLimit(request, env, countDaily, body?.id);
+      if (blocked) return blocked;
+
+      try {
         if ((body as any)?.method === "tools/list") {
           return new Response(JSON.stringify({
             jsonrpc: "2.0",

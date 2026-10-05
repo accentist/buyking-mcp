@@ -263,6 +263,14 @@ Claude Desktop の設定ファイルに以下を追加してください：
 
 ## 🔌 API 直接呼び出し
 
+`https://buyking.saleplaza.com/message` は呼び出し元 IP ごとに回数を数えます。
+
+- `POST /message` はすべて 1 分あたり 30 件までです。
+- 検索ツールと `result_detail_GLOBAL` は、韓国時間の 1 日 500 件の商品照会にも数えます。日付が変わると 0 に戻ります。
+- `tools/list` と `get_server_info` は 1 分の上限にだけ数えます。
+
+上限を超えると HTTP `429` を返し、商品 API は呼び出しません。`npx buyking-mcp` はこの Worker を通らないため、この上限は HTTP エンドポイントに適用されます。
+
 ### HTTP JSON-RPC の例
 
 ```bash
