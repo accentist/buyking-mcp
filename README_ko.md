@@ -93,6 +93,8 @@ KRW는 한국어 라벨, USD는 영어 라벨, JPY는 일본어 라벨입니다.
 
 `price_history`는 `{ date: "YYYY-MM-DD", price }` 목록이며, 날짜가 오래된 순이고 최대 10건입니다. 기록이 있을 때만 그 아래에 최저가, 최고가, 첫 기록 대비 현재가를 붙입니다. 없거나 JSON이 아니면 "아직 기록된 가격 히스토리가 없다"만 적고 요약 세 줄은 생략합니다.
 
+KR (`KRW`, 한국어 라벨):
+
 ```text
 - 상품 ID: 25023
 - 제목: ...
@@ -123,6 +125,75 @@ KRW는 한국어 라벨, USD는 영어 라벨, JPY는 일본어 라벨입니다.
 - 싫어요: 0
 - 의견 수: 0
 - 등록 시각: 2026-10-01T15:00:01.000Z
+```
+
+US (`USD`, 영어 라벨):
+
+```text
+- Product ID: 25023
+- Title: ...
+- Ships to: US
+- Platform: amazon
+- Category: ...
+- Image: https://m.media-amazon.com/...jpg
+- Saleplaza: https://saleplaza.com/en/25023
+- Buy link: https://...
+- Original: USD 29.9
+- Deal Price: USD 19.9
+- Discount: 33%
+- Target price: none
+- Price history:
+  - 2026-09-01: USD 25
+  - 2026-09-20: USD 19.9
+- Lowest in range: USD 19.9
+- Highest in range: USD 25
+- Current vs first record: USD -5.1
+- Deal status: ...
+- Deal checked at: ...
+- SP Score: 88
+- Dealchelin: 3-star
+- Customer grade: ...
+- BuyKing says: ...
+- Recommend reason: ...
+- Clicks: 0
+- Likes: 0
+- Dislikes: 0
+- Opinions: 0
+- Listed at: 2026-10-01T15:00:01.000Z
+```
+
+JP (`JPY`, 일본어 라벨):
+
+```text
+- 商品ID: 25023
+- タイトル: ...
+- 配送可能国: JP
+- プラットフォーム: jp-amazon
+- カテゴリ: ...
+- 画像: https://m.media-amazon.com/...jpg
+- セールプラザ: https://saleplaza.com/ja/25023
+- 購入リンク: https://...
+- 元の価格: JPY 1,980
+- 特価: JPY 1,480
+- 割引: 25%
+- 目標価格: なし
+- 価格履歴:
+  - 2026-10-04: JPY 1,980
+- 期間内最安値: JPY 1,480
+- 期間内最高値: JPY 1,980
+- 最初の記録と比べた現在価格: JPY -500
+- ディール状態: ...
+- ディール確認時刻: ...
+- SP Score: 74
+- ディールシュラン: 2つ星
+- 顧客グレード: ...
+- バイキング曰く: ...
+- おすすめ理由: ...
+- クリック数: 0
+- いいね: 0
+- よくない: 0
+- 意見数: 0
+- 登録日時: 2026-10-01T15:00:01.000Z
 ```
 
 ### 제공하는 도구 (Tools) — 6개

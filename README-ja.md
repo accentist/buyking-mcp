@@ -93,13 +93,84 @@ curl -X POST https://buyking.saleplaza.com/message \
 
 `price_history` は `{ date: "YYYY-MM-DD", price }` の配列で、日付の古い順、最大10件です。履歴があるときだけ、その下に最安・最高・最初の記録との差を付けます。無い、またはJSONでないときは「まだ記録はない」とだけ書き、要約3行は出しません。
 
+KR（`KRW`、韓国語ラベル）:
+
+```text
+- 상품 ID: 25023
+- 제목: ...
+- 배송가능국가: KR
+- 플랫폼: ali
+- 카테고리: ...
+- 이미지: https://ae-pic-a1.aliexpress-media.com/...jpg
+- 세일프라자: https://saleplaza.com/25023
+- 구매 링크: https://...
+- 원래 가격: KRW 3,261
+- 지금 혜택가: KRW 3,250
+- 할인: 1%
+- 목표가: KRW 2,500
+- 가격 히스토리:
+  - 2026-10-04: KRW 35,900
+- 기간 내 최저가: KRW 35,900
+- 기간 내 최고가: KRW 35,900
+- 첫 기록 대비 현재가: KRW 0
+- 딜 상태: ...
+- 딜 확인 시각: ...
+- SP Score: 74
+- 딜슐랭: 2성
+- 고객 등급: ...
+- Bㅏ이킹 曰: ...
+- 추천 이유: ...
+- 클릭 수: 0
+- 좋아요: 0
+- 싫어요: 0
+- 의견 수: 0
+- 등록 시각: 2026-10-01T15:00:01.000Z
+```
+
+US（`USD`、英語ラベル）:
+
+```text
+- Product ID: 25023
+- Title: ...
+- Ships to: US
+- Platform: amazon
+- Category: ...
+- Image: https://m.media-amazon.com/...jpg
+- Saleplaza: https://saleplaza.com/en/25023
+- Buy link: https://...
+- Original: USD 29.9
+- Deal Price: USD 19.9
+- Discount: 33%
+- Target price: none
+- Price history:
+  - 2026-09-01: USD 25
+  - 2026-09-20: USD 19.9
+- Lowest in range: USD 19.9
+- Highest in range: USD 25
+- Current vs first record: USD -5.1
+- Deal status: ...
+- Deal checked at: ...
+- SP Score: 88
+- Dealchelin: 3-star
+- Customer grade: ...
+- BuyKing says: ...
+- Recommend reason: ...
+- Clicks: 0
+- Likes: 0
+- Dislikes: 0
+- Opinions: 0
+- Listed at: 2026-10-01T15:00:01.000Z
+```
+
+JP（`JPY`、日本語ラベル）:
+
 ```text
 - 商品ID: 25023
 - タイトル: ...
 - 配送可能国: JP
 - プラットフォーム: jp-amazon
 - カテゴリ: ...
-- 画像: https://...
+- 画像: https://m.media-amazon.com/...jpg
 - セールプラザ: https://saleplaza.com/ja/25023
 - 購入リンク: https://...
 - 元の価格: JPY 1,980
