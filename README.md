@@ -13,11 +13,6 @@ An MCP (Model Context Protocol) server providing the persona of "BuyKing, the Sh
 
 ## 🚀 Features
 
-### ✨ [v1.2.1 New] Enhanced Multilingual Global Search
-Find global shopping hot deals smarter without language barriers!
-- **Massive Multilingual Dictionary Built-in**: Accurately and instantly matches global products without AI mistranslation (e.g., translating "mouse" to an animal) using a hashmap of 1,000+ core shopping keywords (English, Japanese ↔ Korean).
-- **Smart Priority Sorting by Input Language**: Automatically detects the user's input language (English, Japanese, Korean) in 0.1 seconds and prioritizes hot deals using that country's currency (USD, JPY, KRW) to the top. (e.g., searching for `apple` in English will show 🇺🇸US products first!)
-
 ### ✨ [v1.2.5] Product detail (`result_detail_GLOBAL`)
 
 Search results now include a product ID line so a follow-up call can load one product. Titles in every country use `title` only.
@@ -195,6 +190,11 @@ JP (`JPY`, Japanese labels):
 - 意見数: 0
 - 登録日時: 2026-10-01T15:00:01.000Z
 ```
+
+### ✨ [v1.2.1 New] Enhanced Multilingual Global Search
+Find global shopping hot deals smarter without language barriers!
+- **Massive Multilingual Dictionary Built-in**: Accurately and instantly matches global products without AI mistranslation (e.g., translating "mouse" to an animal) using a hashmap of 1,000+ core shopping keywords (English, Japanese ↔ Korean).
+- **Smart Priority Sorting by Input Language**: Automatically detects the user's input language (English, Japanese, Korean) in 0.1 seconds and prioritizes hot deals using that country's currency (USD, JPY, KRW) to the top. (e.g., searching for `apple` in English will show 🇺🇸US products first!)
 
 ### Provided Tools — 6
 

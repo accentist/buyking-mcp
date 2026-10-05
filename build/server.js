@@ -70,20 +70,45 @@ const searchBuykingSemantic = async ({ keyword, category, platform, sort, region
     const finalLang = isGlobal ? detectLanguage(keyword) : defaultLang;
     const persona = PERSONA[finalLang] || PERSONA.ko;
     try {
-        const targetUrl = new URL("https://saleplaza.com/api/products");
-        targetUrl.searchParams.set("search", keyword);
-        targetUrl.searchParams.set("per_page", "20");
-        // region 전달: GLOBAL이면 필터 우회, 아니면 해당 국가만
-        targetUrl.searchParams.set("region", region || "GLOBAL");
-        if (category)
-            targetUrl.searchParams.set("category", category);
-        if (platform)
-            targetUrl.searchParams.set("platform", platform);
-        if (sort)
-            targetUrl.searchParams.set("sort", sort);
-        const resp = await fetch(targetUrl.toString());
-        const json = (await resp.json());
-        let products = json.products || json.data || [];
+        let products;
+        const isCountry = region === 'KR' || region === 'US' || region === 'JP';
+        if (isCountry) {
+            // 사이트 전체 탭과 동일. keywords에 입력어만 넣어 동의어 확장을 막는다.
+            // region은 PRODUCT_SHIPPING_REGIONS.region_code로 그 국가 배송 상품만 남긴다.
+            const resp = await fetch('https://api.saleplaza.com/api/public/products/search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    search: keyword,
+                    keywords: [keyword],
+                    region,
+                    platform: platform || 'all_rank',
+                    category: category || 'all',
+                    date: 'all',
+                    sort: sort || 'newest',
+                    page: 1,
+                    per_page: 20,
+                    include_today: true,
+                }),
+            });
+            const json = (await resp.json());
+            products = json.products || json.data || [];
+        }
+        else {
+            const targetUrl = new URL("https://saleplaza.com/api/products");
+            targetUrl.searchParams.set("search", keyword);
+            targetUrl.searchParams.set("per_page", "20");
+            targetUrl.searchParams.set("region", region || "GLOBAL");
+            if (category)
+                targetUrl.searchParams.set("category", category);
+            if (platform)
+                targetUrl.searchParams.set("platform", platform);
+            if (sort)
+                targetUrl.searchParams.set("sort", sort);
+            const resp = await fetch(targetUrl.toString());
+            const json = (await resp.json());
+            products = json.products || json.data || [];
+        }
         if (products.length === 0) {
             return {
                 content: [{ type: "text", text: persona.noResult }]
