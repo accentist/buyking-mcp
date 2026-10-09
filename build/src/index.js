@@ -16,7 +16,7 @@ Allow: /
         // 2. AI SEO: llms.txt (AI 크롤러용 마크다운 안내서)
         if (request.method === "GET" && url.pathname === "/llms.txt") {
             const llmsText = `# BuyKing MCP Server
-이 서버는 Saleplaza(세일프라자)의 쇼핑 지배자, Bㅏ이킹(BuyKing) 페르소나를 제공하는 MCP(Model Context Protocol) 서버입니다.
+이 서버는 Saleplaza(세일프라자)의 쇼핑 지배자, 바이킹(BuyKing) 페르소나를 제공하는 MCP(Model Context Protocol) 서버입니다.
 
 ## 제공하는 기능 (Tools)
 - \`search_buyking_semantic\`: 사용자의 자연어 질문이나 키워드를 기반으로 세일프라자의 상품을 시맨틱 검색하여 핫딜 정보를 반환합니다. (예: "가성비 무소음 마우스 찾아줘")
@@ -34,7 +34,7 @@ Allow: /
                 "server": {
                     "name": "buyking-mcp",
                     "version": "1.0.0",
-                    "description": "세일프라자 AI 사자왕 Bㅏ이킹의 핫딜 시맨틱 검색 서버"
+                    "description": "세일프라자 AI 사자왕 바이킹의 핫딜 시맨틱 검색 서버"
                 },
                 "endpoints": {
                     "message": "https://buyking.saleplaza.com/message"

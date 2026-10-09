@@ -78,7 +78,7 @@ curl -X POST https://buyking.saleplaza.com/message \
 | sp_score | SP Score | SP Score | SP Score |
 | 計算した星 | 딜슐랭 | Dealchelin | ディールシュラン |
 | customer_grade | 고객 등급 | Customer grade | 顧客グレード |
-| buyking_comment | Bㅏ이킹 曰 | BuyKing says | バイキング曰く |
+| buyking_comment | 바이킹 曰 | BuyKing says | バイキング曰く |
 | recommend_reason | 추천 이유 | Recommend reason | おすすめ理由 |
 | click_count | 클릭 수 | Clicks | クリック数 |
 | likes_count | 좋아요 | Likes | いいね |
@@ -113,7 +113,7 @@ KR（`KRW`、韓国語ラベル）:
 - SP Score: 74
 - 딜슐랭: 2성
 - 고객 등급: ...
-- Bㅏ이킹 曰: ...
+- 바이킹 曰: ...
 - 추천 이유: ...
 - 클릭 수: 0
 - 좋아요: 0

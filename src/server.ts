@@ -13,11 +13,11 @@ type RegionConfig = {
 const PERSONA = {
   ko: {
     intro: (keyword: string) =>
-      `크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 Bㅏ이킹이다!\n네 녀석이 찾는 '${keyword}', 짐이 시맨틱 검색으로 찾아온 최고의 전리품을 보아라!\n\n`,
+      `크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 바이킹이다!\n네 녀석이 찾는 '${keyword}', 짐이 시맨틱 검색으로 찾아온 최고의 전리품을 보아라!\n\n`,
     noResult: '크하하! 짐이 다 찾아보았으나 네 녀석이 원하는 조건의 핫딜은 현재 보물창고에 없도다!',
     error: (msg: string) => `크하하! 에러가 발생했다! 짐의 보물창고 문이 열리지 않는다: ${msg}`,
     cta: '👉 당장 쟁취하러 가기(클릭)',
-    aiComment: 'Bㅏ이킹 曰',
+    aiComment: '바이킹 曰',
     originalPrice: '원래 가격',
     currentPrice: '지금 혜택가',
     discount: '할인!',
@@ -267,7 +267,7 @@ const DETAIL_LABELS: Record<DetailLang, {
   star: (n: number) => string;
 }> = {
   ko: {
-    intro: (id) => `크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 Bㅏ이킹이다!\n상품 ID ${id}의 상세 전리품을 펼쳐 보이노라!\n\n`,
+    intro: (id) => `크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 바이킹이다!\n상품 ID ${id}의 상세 전리품을 펼쳐 보이노라!\n\n`,
     id: '상품 ID',
     title: '제목',
     country: '배송가능국가',
@@ -290,7 +290,7 @@ const DETAIL_LABELS: Record<DetailLang, {
     spScore: 'SP Score',
     dealchelin: '딜슐랭',
     customerGrade: '고객 등급',
-    buykingComment: 'Bㅏ이킹 曰',
+    buykingComment: '바이킹 曰',
     recommendReason: '추천 이유',
     clicks: '클릭 수',
     likes: '좋아요',
@@ -605,7 +605,7 @@ export const createServer = () => {
       return {
         content: [{
           type: "text",
-          text: `크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 Bㅏ이킹이다!\n\n현재 BuyKing MCP 서버 정보:\n- 버전: 1.2.5\n- 서버명: BuyKing-MCP\n- 제공 도구 (6개):\n  🌍 search_buyking_semantic — GLOBAL 전체 검색 (국가코드 표기)\n  🇰🇷 search_buyking_semantic_KR — 한국 배송 (KRW/한국어)\n  🇺🇸 search_buyking_semantic_US — 미국 배송 (USD/English)\n  🇯🇵 search_buyking_semantic_JP — 일본 배송 (JPY/日本語)\n  🔎 result_detail_GLOBAL — 상품 ID 단건 상세 (가격 히스토리)\n  ℹ️ get_server_info — 서버 정보\n- 엔드포인트: https://buyking.saleplaza.com/message\n\n계속해서 핫딜 정보를 물어보라!`
+          text: `크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 바이킹이다!\n\n현재 BuyKing MCP 서버 정보:\n- 버전: 1.2.5\n- 서버명: BuyKing-MCP\n- 제공 도구 (6개):\n  🌍 search_buyking_semantic — GLOBAL 전체 검색 (국가코드 표기)\n  🇰🇷 search_buyking_semantic_KR — 한국 배송 (KRW/한국어)\n  🇺🇸 search_buyking_semantic_US — 미국 배송 (USD/English)\n  🇯🇵 search_buyking_semantic_JP — 일본 배송 (JPY/日本語)\n  🔎 result_detail_GLOBAL — 상품 ID 단건 상세 (가격 히스토리)\n  ℹ️ get_server_info — 서버 정보\n- 엔드포인트: https://buyking.saleplaza.com/message\n\n계속해서 핫딜 정보를 물어보라!`
         }]
       };
     }

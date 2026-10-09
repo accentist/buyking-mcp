@@ -2,9 +2,9 @@
 
 *Read this in other languages: [English](README.md), [日本語](README-ja.md), [한국어](README_ko.md)*
 
-세일프라자(Saleplaza)의 쇼핑 지배자, 사자왕 Bㅏ이킹 페르소나를 제공하는 MCP(Model Context Protocol) 서버입니다.
+세일프라자(Saleplaza)의 쇼핑 지배자, 사자왕 바이킹 페르소나를 제공하는 MCP(Model Context Protocol) 서버입니다.
 
-> 크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 Bㅏ이킹이다! 네 녀석이 원하는 최고의 핫딜을 찾아주마!
+> 크하하! 짐은 세일프라자의 쇼핑 지배자, 사자왕 바이킹이다! 네 녀석이 원하는 최고의 핫딜을 찾아주마!
 
 [![Glama.ai BuyKing MCP Server Badge](https://images.saleplaza.com/img-assets/glama-card-badge.png)](https://glama.ai/mcp/servers/accentist/buyking-mcp/score)
 
@@ -78,7 +78,7 @@ KRW는 한국어 라벨, USD는 영어 라벨, JPY는 일본어 라벨입니다.
 | sp_score | SP Score | SP Score | SP Score |
 | 계산한 성 | 딜슐랭 | Dealchelin | ディールシュラン |
 | customer_grade | 고객 등급 | Customer grade | 顧客グレード |
-| buyking_comment | Bㅏ이킹 曰 | BuyKing says | バイキング曰く |
+| buyking_comment | 바이킹 曰 | BuyKing says | バイキング曰く |
 | recommend_reason | 추천 이유 | Recommend reason | おすすめ理由 |
 | click_count | 클릭 수 | Clicks | クリック数 |
 | likes_count | 좋아요 | Likes | いいね |
@@ -113,7 +113,7 @@ KR (`KRW`, 한국어 라벨):
 - SP Score: 74
 - 딜슐랭: 2성
 - 고객 등급: ...
-- Bㅏ이킹 曰: ...
+- 바이킹 曰: ...
 - 추천 이유: ...
 - 클릭 수: 0
 - 좋아요: 0
